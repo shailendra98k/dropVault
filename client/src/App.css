@@ -1,0 +1,143 @@
+/* -------------------------------Home Component-------------------- */
+#home-div-box-1{
+    padding: 0px;
+    width:80%;
+    border:1px solid black;
+    margin: auto;
+    margin-top: 4%;
+    background-color: rgb(205, 219, 231);
+    
+    
+}
+#home-div-box-2{
+    height: 600px;
+    overflow-y: scroll;
+
+}
+#upload-files-btn-1,#create-new-folder-btn-1{
+    padding: 0px;
+    width:50%;
+    height:40px;
+    background-color: #59b404;
+    color:white;
+    font-size: medium;
+    border:1px solid #59b404;
+    
+}
+
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+::-webkit-scrollbar-thumb {
+background: rgb(137, 156, 238); 
+}
+  
+
+/* -----------------------------------Dialog Box Components------------------------------- */
+
+#dialog-box-div-1{
+    border: 1px solid red;
+    width:40%;
+    height:30vh;
+    margin: auto;
+    position:fixed; 
+    top:200px;
+    margin-left: 20%;
+    visibility: hidden;
+    background-color: #9494b1;
+}
+
+.visible{
+    visibility: visible;
+}
+
+/* .hide{
+    visibility: hidden;
+} */
+
+.fade-in{
+    animation: fadein 1s;
+    -webkit-animation: fadein 1s;
+    animation-fill-mode:forwards;
+    
+}
+
+
+.fade-out{
+    animation: fadeout 1s;
+    -webkit-animation: fadeout 1s;
+    animation-fill-mode:forwards;
+    
+}
+
+
+
+@keyframes fadein {
+    from {
+        opacity:0;
+        transform: translate3d(0, -20%, 0);
+        visibility: hidden;
+
+    }
+    to {
+        opacity:1;
+        transform: translate3d(0, 0%, 0);
+        visibility: visible;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity:1;
+        transform: translate3d(0, 0%, 0);
+        visibility: visible;
+    }
+    to {
+        opacity:0;
+        transform: translate3d(0, -20%, 0);
+        visibility: hidden;
+    }
+}
+
+
+
+
+
+#dialog-box-div-2{
+    position:absolute;
+
+
+}
+
+#dialog-box-input-1{
+    position: absolute;
+    top: 30%;
+    height: 45px;
+    width: 98%;
+    left: 1%;
+    
+}
+#dialog-box-btn-1{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+#dialog-box-btn-2{
+    position: absolute;
+    bottom: 10px;
+    right: 90px;
+}
+
+#fa-window-close{
+    color:'dc3545' ;
+    font-size:'20px';
+     position:'absolute';
+     top:'5px';
+    right:'5px'
+}
+
+.dialog-box-fade-out{
+   color:'green';
+   border: 1px solid black
+}
