@@ -43,9 +43,7 @@ function Home(){
             }
             setFiles(temp);
             $('#home-file-list-1').empty();
-            // if(document.getElementById('home-address-bar-1')){
-              
-            // }
+            
             
         });
         
@@ -78,6 +76,8 @@ function Home(){
           <Files currDir={currDir} setCurrDir={setCurrDir} files={files} />
           <DialogBox currDir={currDir} files={files} setFiles={setFiles}/>
         </div>
+
+        
 
     </div>
     )
