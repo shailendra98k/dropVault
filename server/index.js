@@ -10,13 +10,23 @@ const mongoose = require('./config/mongoose')
 const app = express();
 const PORT = 8000;
 const Directory = require('./Model/Directory');
+const User = require('./Model/User');
 const { createDecipher } = require('crypto');
-const s3=require( './S3/s3')
+const bcryptjs=require('bcryptjs')
+// const s3=require( './S3/s3')
 
 app.use(fileUpload())
  
-app.use(cors())
+app.use(cors({origin: true, credentials:true})) 
+//The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. Origin 'http://localhost:4200' is therefore not allowed access. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+
+
 app.use(bodyParser());
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+app.use(bodyParser.json());
+
 console.log("Fuck")
 const db = mongoose.connection;
 db.once('open', function() {
@@ -70,17 +80,51 @@ app.post('/addNewFolder',(req,res)=>{
 })
 
 
+app.post('/login',async (req,res)=>{
+  console.log(req.body)
+  User.findOne({"username":req.body.username}).then( async (user)=>{
+     console.log("User found is: ", user);
+     console.log("Password from req is: ", req.body.password);
+    
+     if((user.password).localeCompare(req.body.password)==0){
+        const cookie= await  bcryptjs.hash(user.username,process.env.SALT);
+        res.cookie("User",user.username)
+        res.cookie("id",cookie)
+        console.log("Cookie set...")
+        res.send("OK")
+     }else{
+      res.send("NOK")
+     }
+  }).catch((err)=>{
+     console.log("Error is: ",err);
+  })
+
+})
+
+app.post('/register',async(req,res)=>{
+   
+    User.create(req.body);
+    const rootDirectory=await bcryptjs.hash(req.body.username, process.env.SALT)
+    Directory.create({'dir':req.body.username,'files':[]})
+    fs.mkdir(__dirname+'/upload/'+req.body.username,(err)=>{
+      console.log(__dirname+'/upload/'+req.body.usrername +"   created...");
+      res.send("Registration Successful");
+   })
+    
+   
+})
+
+
+
+
+
+
+
+
+
+
+
 app.post('/upload', function(req,res){ 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    var len=(req.files.uploaded_files.length)
    var uploaded_files=[]
    if(len)uploaded_files=req.files.uploaded_files;
@@ -95,7 +139,7 @@ app.post('/upload', function(req,res){
       console.log("Request body is: ",req.body)
 
       
-      // for( var i=0;i<uploaded_files.length;i++){
+    
          
       var file=req.files.uploaded_files;
       var metadata={};
@@ -107,7 +151,7 @@ app.post('/upload', function(req,res){
       dir[0].files.push(metadata);
       let data=file.data;
       
-      let file_path=`${__dirname}/upload/${req.body.current_dir.substr(2)}/`+file.name;
+      let file_path=`${__dirname}/upload/${req.body.current_dir}/`+file.name;
       
       fs.writeFile(file_path, file.data, (err) => {
          if (err) {
@@ -115,22 +159,22 @@ app.post('/upload', function(req,res){
          }
          else {
             console.log("uploaded successfully..."); 
+            dir[0].save();
+            return res.send(metadata);
          }
       });
-      s3.uploadFile(req.body.current_dir,metadata.name,metadata.type,data);
+      // s3.uploadFile(req.body.current_dir,metadata.name,metadata.type,data);
 
-      
-      
-         
-      
-      // }
-      dir[0].save();
-
-      return res.send(metadata)
+     
+     
    })
   
    
 })
+
+
+
+
 
 
 

@@ -4,7 +4,7 @@ const s3= require('./config')
 const fs = require('fs' )
 
 function uploadFile(path,fileName,content_type,fileData){
-//    console.log("S3 file data is: ", filedata)
+
     
     const params = {
         Bucket: process.env.BUCKET_NAME,
@@ -14,12 +14,12 @@ function uploadFile(path,fileName,content_type,fileData){
         ContentType:content_type
         
     };
-    s3.upload(params, function(err, data) {
-        if (err) {
-            throw err;
-        }
-        console.log(`File uploaded successfully. ${data.Location}`);
-    });
+    // s3.upload(params, function(err, data) {
+    //     if (err) {
+    //         throw err;
+    //     }
+    //     console.log(`File uploaded successfully. ${data.Location}`);
+    // });
 };
 
 function createNewFolder(name){
@@ -37,6 +37,5 @@ function createNewFolder(name){
         }
     });
 }
-
 
 module.exports={uploadFile, createNewFolder}

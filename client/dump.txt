@@ -1,0 +1,17 @@
+ <div style={{padding:'5px',position:'relative',top:'30%',fontSize:'15px', color:color, overflow:'hidden',height:'30px'}}> { filename} </div>
+                
+                <div className='iconsDiv' style={{position:'absolute',bottom:'-5px',left:'0px'}}>
+                    <FontAwesomeIcon className='icon' icon={icon}  style={{color:color,fontSize:'50px',opacity:'0.5'}}/>
+                    <span style={{ position:'relative',left:'-35px',top:'-8px',color:color,fontWeight:'bold'}} >{extension}  </span>
+                </div>
+                <div id='viewDownloadIcons' style={{position:'absolute',bottom:'0px',right:'0px'}}>
+                    <span id='sizeDiv' style={{ color:color, padding:'5px'}}> {size} {sizeUnit} </span>
+                    <a href='https://dropbox-bucket-1.s3.amazonaws.com/Mr+Bean+in+Room+426+_+Episode+8+_+Widescreen+Version+_+Classic+Mr+Bean1622101431765.mp4' download ><FontAwesomeIcon  className='icon' icon={faArrowCircleDown} style={{fontSize:'18px',color:color,display:visiblity}}/></a>
+                    <span>  </span>
+                    {/* <a href='file:///C:\Users\ShailendraPC\Desktop\dropBox\client\src\components\Aadhar.jpg'  >hh</a> */}
+                    {/* <FontAwesomeIcon className='icon' icon={faEye} style={{fontSize:'18px',color:color,display:visiblity}}/>  */}
+                     {/* <a href={`http://localhost:8000/view?filename=${filePath}` } download='view.pdf' ><FontAwesomeIcon  className='icon' icon={faArrowCircleDown} style={{fontSize:'18px',color:color,display:visiblity}}/></a>
+                    <span>  </span>
+                    <a href={`http://localhost:8000/view?filename=${filePath}` } target='_blank'>   <FontAwesomeIcon className='icon' icon={faEye} style={{fontSize:'18px',color:color,display:visiblity}}/> </a>
+                   */}
+                   </div>
