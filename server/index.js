@@ -10,6 +10,7 @@ const mongoose = require('./config/mongoose')
 const app = express();
 const PORT = 8000;
 const Directory = require('./Model/Directory');
+const Data = require('./Model/Data')
 const { createDecipher } = require('crypto');
 const s3=require( './S3/s3')
 
@@ -136,6 +137,31 @@ app.post('/upload', function(req,res){
 
 app.get('/view',(req,res)=>{
    res.sendFile(`${__dirname}\\upload\\${req.query.filename}`);
+})
+
+
+
+app.post('/api/v1/',(req,res)=>{
+   console.log(req.body)
+   Data.create(req.body)
+   res.send("Done")
+})
+app.get('/api/v1/*',(req,res)=>{
+   const dir = req.path.slice(7)
+   Data.find({base_dir:dir}).then((dirty_data)=>{
+      const clean_data = {
+         directories:[],
+         files:[]
+      };
+      dirty_data.map((data)=>{
+         if(data.type==0){
+            clean_data.directories.push(data)
+         }else{
+            clean_data.files.push(data)
+         }
+      })
+      return res.send(clean_data)
+   })
 })
 
 app.listen(PORT, function() {
