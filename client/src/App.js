@@ -15,6 +15,7 @@ function App() {
   const [directories,setDirectories] = useState([])
   const [files,setFiles] = useState([])
   const [currDir, setCurrDir] = useState('/')
+  const [breadcrumbsList, setBreadcrumbsList] = useState(["Home"])
 
   const defaultContext = {
     currDir:currDir,
@@ -22,7 +23,9 @@ function App() {
     files:files,
     setFiles:setFiles,
     directories:directories,
-    setDirectories:setDirectories
+    setDirectories:setDirectories,
+    breadcrumbsList:breadcrumbsList,
+    setBreadcrumbsList:setBreadcrumbsList
   }
   
   return(

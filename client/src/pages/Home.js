@@ -21,6 +21,7 @@ import Typography from '@material-ui/core/Typography';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BASE_URI} from '../constants'
 import axios from 'axios'
+import { Breadcrumbs } from "@mui/material";
 
 
 const Home = () => {
@@ -125,6 +126,7 @@ const Body = () => {
 
   return (
     <Box>
+      <DirBreadcrumbs/>
       <Box sx={{ display: 'flex' }}>
         {directories.map((dir) => {
           return <FolderCard data={dir} />
@@ -144,13 +146,15 @@ const Body = () => {
 
 function FolderCard({data}) {
   const classes = useStyles();
-  const {currDir, setDirectories, setFiles} = React.useContext(AppContext)
+  const {currDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
 
   const getIntoFolderHandler = (name)=>{
     // setCurrDir(currDir+name)
     axios.get(BASE_URI+name).then((res)=>{
+
       setDirectories(res.data.directories)
       setFiles(res.data.files)
+      setBreadcrumbsList(  ("Home"+name).split('/'))
     })
   }
 
@@ -182,6 +186,32 @@ function FileCard({data}) {
     </Box>
 
   );
+}
+
+const DirBreadcrumbs = () => {
+  const {breadcrumbsList,currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
+  const getIntoFolderHandler = (name)=>{
+    // setCurrDir(currDir+name)
+    axios.get(BASE_URI+name).then((res)=>{
+
+      setDirectories(res.data.directories)
+      setFiles(res.data.files)
+      const breadcrumbsString = name=='/'?"Home":"Home"+name
+      setBreadcrumbsList(breadcrumbsString.split('/'))
+    })
+  }
+  return (
+     <Breadcrumbs
+      separator="/"
+      aria-label="breadcrumb"
+    >
+    {breadcrumbsList.map((item,index)=>{
+     
+     const path_uri = index?currDir+item:"/"
+     return <Button size="large" onClick={()=>{getIntoFolderHandler(path_uri)}} >{item}</Button>
+    })}
+    </Breadcrumbs>
+  )
 }
 
 export default Home;
