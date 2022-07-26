@@ -146,21 +146,26 @@ const Body = () => {
 
 function FolderCard({data}) {
   const classes = useStyles();
-  const {currDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
+  const {currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
 
-  const getIntoFolderHandler = (name)=>{
-    // setCurrDir(currDir+name)
-    axios.get(BASE_URI+name).then((res)=>{
+  const getIntoFolderHandler = (currDir,name)=>{
+    const str = (currDir=='/')?(currDir+name):(currDir+"/"+name)
+    const url = BASE_URI + str;
+    console.log(str,url)
+    axios.get(url).then((res)=>{
 
       setDirectories(res.data.directories)
       setFiles(res.data.files)
-      setBreadcrumbsList(  ("Home"+name).split('/'))
+
+      setCurrDir(currDir=='/'?(currDir+name):(currDir+"/"+name)) 
+      const breadCrumbString = (currDir=='/')?(currDir+name):(currDir+"/"+name)
+      setBreadcrumbsList(("Home"+breadCrumbString).split('/'))
     })
   }
 
   return (
     <Box sx={{ margin: '6px', cursor:'pointer'}}>
-      <Card onClick={()=>getIntoFolderHandler(currDir+data.name)} className={classes.root}>
+      <Card onClick={()=>getIntoFolderHandler(currDir,data.name)} className={classes.root}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-folder"></i></div>
           <div><b>{data.name}</b></div> 
@@ -189,26 +194,36 @@ function FileCard({data}) {
 }
 
 const DirBreadcrumbs = () => {
-  const {breadcrumbsList,currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
-  const getIntoFolderHandler = (name)=>{
-    // setCurrDir(currDir+name)
-    axios.get(BASE_URI+name).then((res)=>{
-
+  const {breadcrumbsList,setCurrDir, currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
+  var prefix = ""
+  const changeDirectory = (path_uri)=>{
+    axios.get(BASE_URI+path_uri).then((res)=>{
       setDirectories(res.data.directories)
       setFiles(res.data.files)
-      const breadcrumbsString = name=='/'?"Home":"Home"+name
-      setBreadcrumbsList(breadcrumbsString.split('/'))
+      setCurrDir(path_uri)
+      const breadCrumbString = (path_uri=='/')?"":path_uri
+      setBreadcrumbsList(("Home"+breadCrumbString).split('/'))
+      
     })
   }
   return (
      <Breadcrumbs
       separator="/"
       aria-label="breadcrumb"
-    >
+    > 
     {breadcrumbsList.map((item,index)=>{
+     let path_uri;
+     if (index == 0){
+       path_uri = "/"
+     }else if (index == 1){
+       path_uri = "/"+item;
+       prefix = path_uri;
+     }else{
+       path_uri = prefix+"/"+item;
+       prefix = path_uri
+     }
      
-     const path_uri = index?currDir+item:"/"
-     return <Button size="large" onClick={()=>{getIntoFolderHandler(path_uri)}} >{item}</Button>
+     return <Button size="large" id={path_uri} onClick={()=>{changeDirectory(path_uri)}} >{item}</Button>
     })}
     </Breadcrumbs>
   )
