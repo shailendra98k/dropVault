@@ -13,7 +13,7 @@ const Directory = require('./Model/Directory');
 const Data = require('./Model/Data')
 const { createDecipher } = require('crypto');
 const s3=require( './S3/s3')
-
+const {STORAGE_DIR_PATH} = require('./config/storage')
 app.use(fileUpload())
  
 app.use(cors())
@@ -162,6 +162,40 @@ app.get('/api/v1/*',(req,res)=>{
       })
       return res.send(clean_data)
    })
+})
+
+app.post('/api/v1/upload/',(req,res)=>{
+
+   
+   const files = []
+   if(req.files.file.length){
+      files.push(...req.files.file)
+   } else {
+      files.push(req.files.file)
+   }
+
+   function writeFile(name,extn,data,increment=0){
+      const file_path= increment ?(name+'('+increment+').'+extn):(name+'.'+extn)
+      fs.writeFile(file_path,data, { flag: 'wx' }, (err) => {
+         if (err) {
+            if (err.code === "EEXIST"){
+               writeFile(name,extn,data,increment+1)
+            }
+         }
+         else {
+            console.log(`${name} saved...`); 
+         }
+      });
+   }
+   
+   files.map((file)=>{
+      let file_name = file.name.split('.').slice(0,-1).toString().replaceAll(',','.');
+      let file_ext = file.name.split('.').slice(-1).toString()
+      writeFile("../storage/Guest/"+file_name,file_ext,file.data)
+   } )
+
+   res.send("Received and saved successfully...")
+
 })
 
 app.listen(PORT, function() {
