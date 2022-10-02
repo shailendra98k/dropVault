@@ -6,11 +6,13 @@ var cors = require('cors')
 require('dotenv').config()
 const bodyParser=require('body-parser')
 const download = require('download')
-const mongoose = require('./config/mongoose')
+require('./config/mongoose')
+require('./config/mysql')
 const app = express();
 const PORT = 8000;
 const Directory = require('./Model/Directory');
 const Data = require('./Model/Data')
+const User = require('./Model/User')
 const { createDecipher } = require('crypto');
 const s3=require( './S3/s3')
 const {STORAGE_DIR_PATH} = require('./config/storage')
@@ -18,11 +20,6 @@ app.use(fileUpload())
  
 app.use(cors())
 app.use(bodyParser());
-console.log("Fuck")
-const db = mongoose.connection;
-db.once('open', function() {
-   console.log("MongoDB up and running...")
-});
 
 app.get('/',(req,res)=>{
    res.send("Hi");
