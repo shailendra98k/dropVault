@@ -3,7 +3,7 @@ const mongoose = require('../config/mongoose');
 const Schema = mongoose.Schema;
 
 const Directory = new Schema ({
-    dir:{
+    dir_name:{
         type:String,
         required:true
     },
@@ -12,14 +12,18 @@ const Directory = new Schema ({
         required: true,
         default:[]
     },
+    sub_dirs:{
+        type:Array,
+        required: true,
+        default:[]
+    },
     size:{
         type:Number,
         default:0
     },
-    createdAt:{
-        type:Date,
-        default:Date.now()
+    counts: {
+        type: Number,
+        default:0
     }
-
 }, {timestamps:true});
 module.exports=mongoose.model('Directory', Directory);
