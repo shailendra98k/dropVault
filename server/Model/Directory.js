@@ -3,19 +3,19 @@ const mongoose = require('../config/mongoose');
 const Schema = mongoose.Schema;
 
 const Directory = new Schema ({
-    dir_name:{
+    name:{
+        type:String,
+        required:true
+    },
+    dir_path:{
         type:String,
         required:true
     },
     files:{
-        type: Array,
-        required: true,
-        default:[]
+        type: [{ type: Schema.Types.ObjectId, ref: 'File' }]
     },
     sub_dirs:{
-        type:Array,
-        required: true,
-        default:[]
+        type: [{ type: Schema.Types.ObjectId, ref: 'Directory' }]
     },
     size:{
         type:Number,

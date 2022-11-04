@@ -12,17 +12,30 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-
+import {AppContext} from '../App'
+import axios from 'axios'
+import {BASE_URI}from '../constants'
+import { useHistory } from 'react-router-dom';
 const theme = createTheme();
 
 export default function SignIn() {
+  const {setUser, setCurrDir} = React.useContext(AppContext)
+  const history = useHistory();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    axios.post(BASE_URI+'/sign-in/',{
+      email:data.get('email'),
+      password:data.get('password')
+    }).then((res)=>{
+      console.log("Res is:", res);
+      localStorage.setItem('user',JSON.stringify(res.data))
+
+      window.location.href ='/'
+
+    }).catch((err)=>{
+      console.log(err)
+    })
   };
 
   return (

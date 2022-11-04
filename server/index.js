@@ -11,7 +11,7 @@ require('./config/mysql')
 const app = express();
 const PORT = 8000;
 const Directory = require('./Model/Directory');
-const Data = require('./Model/Data')
+const File = require('./Model/File')
 const User = require('./Model/User')
 const { createDecipher } = require('crypto');
 const s3=require( './S3/s3')
@@ -43,90 +43,79 @@ app.get('/get_files', (req,res)=>{
   
 })
 
-app.post('/addNewFolder',(req,res)=>{
+app.post('/api/v1/addNewFolder',(req,res)=>{
    const currDir=req.body.currDir;
    const newFolderName=req.body.name;
-   Directory.find({dir:currDir}).then((dir)=>{
-
-      const document={
+   const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}/${req.body.name}`:`/${req.body.user_id}${req.body.current_dir}/${req.body.name}`
+   const base_dir = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
+   console.log("Dir_path is: ", base_dir)
+   Directory.findOne({dir_path:base_dir}).then(async (dir)=>{
+      console.log("Dir in new folder is: ",dir)
+      const data={
          "name":req.body.name,
-         "date":req.body.date,
-         "size":req.body.size
+         "dir_path":dir_path
       }
-      console.log("What is dir", dir)
-      dir[0].files.push(document);
-      dir[0].save();
-      
-      fs.mkdir(__dirname+'/upload/'+currDir.substr(1)+'/'+req.body.name,(err)=>{
-         console.log(__dirname+'/upload/'+currDir.substr(1)+req.body.name +"   created...")
+    
+      const directory = await Directory.create(data);
+      dir.sub_dirs.push(directory.id)
+       
+      fs.mkdir(`${__dirname}/../storage${dir_path}`,(err)=>{
+         console.log(`${__dirname}/../storage${dir_path}  created...`)
       })
-      
-      var temp=currDir+'/'+newFolderName;
-      s3.createNewFolder(temp.substr(2))
-      res.send({"status":200});
+      dir.save()
+      res.status(201)
    })
 })
 
 
-app.post('/upload', function(req,res){ 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+app.post('/api/v1/upload', function(req,res){ 
+
    var len=(req.files.uploaded_files.length)
    var uploaded_files=[]
    if(len)uploaded_files=req.files.uploaded_files;
    else{
       uploaded_files[0]=req.files.uploaded_files;
    }
-   
 
-   Directory.find({dir:req.body.current_dir}).then((dir)=>{
+   console.log("Req body : ", req.body)
+   console.log("Req fils : ", req.files)
+   
+   
+   const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
+   
+   Directory.findOne({dir_path:dir_path}).then( async (dir)=>{
+
       console.log(`upload${req.body.current_dir}`);
       console.log("Dir receive drom databse is, ", dir)
       console.log("Request body is: ",req.body)
 
       
-      // for( var i=0;i<uploaded_files.length;i++){
-         
-      var file=req.files.uploaded_files;
-      var metadata={};
-      metadata["name"]=file.name;
-      metadata["type"]=file.mimetype;
-      metadata["size"]=file.size;
-      metadata["id"]=Date.now();
-      metadata["date"]=new Date(Date.now()).toLocaleString();
-      dir[0].files.push(metadata);
-      let data=file.data;
+      for( var i=0;i<uploaded_files.length;i++){
       
-      let file_path=`${__dirname}/upload/${req.body.current_dir.substr(2)}/`+file.name;
-      
-      fs.writeFile(file_path, file.data, (err) => {
-         if (err) {
-            res.send("Error");
-         }
-         else {
-            console.log("uploaded successfully..."); 
-         }
-      });
-      s3.uploadFile(req.body.current_dir,metadata.name,metadata.type,data);
+         var metadata={};
+         metadata["filename"]=uploaded_files[i].name;
+         metadata["type"]=uploaded_files[i].mimetype;
+         metadata["size"]=uploaded_files[i].size;
 
-      
-      
+         const file = await File.create(metadata);
          
-      
-      // }
-      dir[0].save();
+         dir.files.push(file.id);
 
-      return res.send(metadata)
+         let file_path=`${__dirname}/../storage${dir_path}/`+uploaded_files[i].name;
+         
+
+         fs.writeFile(file_path, uploaded_files[i].data, (err) => {
+            if (err) {
+               res.send("Error");
+            }
+            else {
+               console.log("uploaded successfully..."); 
+            }
+         });
+      }
+      dir.save();
    })
-  
+   res.status(200)
    
 })
 
@@ -136,29 +125,90 @@ app.get('/view',(req,res)=>{
    res.sendFile(`${__dirname}\\upload\\${req.query.filename}`);
 })
 
-
-
-app.post('/api/v1/',(req,res)=>{
-   console.log(req.body)
-   Data.create(req.body)
-   res.send("Done")
-})
-app.get('/api/v1/*',(req,res)=>{
-   const dir = req.path.slice(7)
-   Data.find({base_dir:dir}).then((dirty_data)=>{
-      const clean_data = {
-         directories:[],
-         files:[]
-      };
-      dirty_data.map((data)=>{
-         if(data.type==0){
-            clean_data.directories.push(data)
-         }else{
-            clean_data.files.push(data)
-         }
-      })
-      return res.send(clean_data)
+app.post('/api/v1/sign-up/', async (req, res) => {
+   /**
+    * On signup, 3 task needs to be performed
+    * 1. Obviously, user need to be cretaed in (Mysql DB)
+    * 2. A directory to be creteas specificly for that user in the storage
+    * 3. Now that directory is created, we need to store the new directory info in MongoDB
+    */
+   const user = await User.findAll({
+      where: {
+         email: req.body.email
+      }
    })
+   if(user.length){
+      res.status(403).send("User with email already exists!!!")
+   }
+   //create a new user
+   try{
+      const new_user = await User.create({
+         email:req.body.email,
+         password:req.body.password,
+         first_name:req.body.first_name,
+         last_name:req.body.last_name
+      })
+   
+      fs.mkdir(`../storage/${new_user.id}/`, function(err) {
+         if(err){
+            console.log(err);
+         }else{
+            console.log("Dir created for the new user")
+         }
+      });
+      Directory.create({
+         name:new_user.id,
+         dir_path:`/${new_user.id}`
+      });
+      res.status(201).send("User created successfully!!!");
+   }
+   catch(e){
+      res.status(500).send("Internal Server Error");
+   }
+   
+   
+})
+app.post('/api/v1/sign-in/', async (req,res)=>{
+   const user = await User.findAll({
+      where: {
+         email: req.body.email,
+         password: req.body.password
+      }
+   })
+   if(!user.length){
+      res.status(403).send("Incorrect credentials!!!")
+   }
+   res.status(200).json({
+      id: user[0].id,
+      email:user[0].email,
+      first_name: user[0].first_name,
+      last_name:user[0].last_name
+   });
+})
+
+// app.post('/api/v1/',(req,res)=>{
+//    console.log(req.body)
+//    File.create(req.body)
+//    res.send("Done")
+// })
+app.post('/api/v1/',(req,res)=>{
+   
+   const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
+
+   Directory.findOne({dir_path:dir_path}).populate({path:'files'}).populate({path:'files'}).then((dir)=>{
+      console.log("Dir and data is:", dir)
+      if (!dir) return res.send({
+         sub_dirs:[],
+         files:[]
+      })
+      const data = {
+         sub_dirs:dir.sub_dirs,
+         files:dir.files
+      };
+      
+      return res.send(data)
+   })
+   
 })
 
 app.post('/api/v1/upload/',(req,res)=>{
@@ -188,7 +238,7 @@ app.post('/api/v1/upload/',(req,res)=>{
    files.map((file)=>{
       let file_name = file.name.split('.').slice(0,-1).toString().replaceAll(',','.');
       let file_ext = file.name.split('.').slice(-1).toString()
-      writeFile("../storage/Guest/"+file_name,file_ext,file.data)
+      writeFile("../storage/23/"+file_name,file_ext,file.data)
    } )
 
    res.send("Received and saved successfully...")

@@ -1,13 +1,22 @@
 import React from 'react';
 import axios from 'axios';
 import $ from 'jquery'
-import {useState,useEffect} from 'react'
-
+import {useState,useEffect, useContext} from 'react'
+import {AppContext} from '../App'
+import { BASE_URI } from '../constants';
 
 function Dropbox(props) {
 
+    const {currDir,user} = React.useContext(AppContext)
+    const [display, setDisplay] = React.useState('none')
+    React.useEffect(()=>{
+        if(props.isOpen){
+            setDisplay('block')
+        }else{
+            setDisplay('none')
+        }
 
-    const url='http://localhost:8000';
+    })
     var totalData=0;
     var dataSent=0;
     function setTotalData(val){
@@ -22,34 +31,38 @@ function Dropbox(props) {
         var newlyAddedFilesList=[]
             
         const formData=new FormData();
-            file["id"]=Date.now();
-            file["date"]=(new Date()).toLocaleDateString();
-            formData.append('uploaded_files',file);
-            var metadata={
-                "name":file.name,
-                "date":file.date,
-                "size":file.size,
-                "type":"file"
-            }
-            newlyAddedFilesList.push(metadata)
-            console.log("New File Record is: ",newlyAddedFilesList);
-            formData.append('current_dir',props.currDir);
-   
-            axios.post(`${url}/upload`, formData,{
-                    headers: { "Content-Type": "multipart/form-data" },
-                    onUploadProgress(e){
-                        console.log("Loaded :", e.loaded)
-                        document.getElementById(metadata.name).value=(e.loaded/e.total)
-                    }  
-            }).then((res)=>{
-                props.setFiles([...props.files,...newlyAddedFilesList])
-                setDataSent(dataSent+metadata.size)
-                console.log("dataSent is: ",dataSent)
-                if(dataSent==totalData)props.setView("HOME")
+            
+        file["id"]=Date.now();
+        file["date"]=(new Date()).toLocaleDateString();
+        formData.append('uploaded_files',file);
+        var metadata={
+            "name":file.name,
+            "size":file.size,
+            "type":"file"
+        }
+        newlyAddedFilesList.push(metadata)
+        console.log("New File Record is: ",newlyAddedFilesList, currDir);
+        formData.append('user_id',user.id)
+        formData.append('current_dir',currDir);
+        formData.append('name', file.name);
+        formData.append('size', file.size);
+        formData.append('type', 0);
 
-            }).catch((err)=>{
-                console.log(err);
-            }) 
+        axios.post(`${BASE_URI}/upload`, formData,{
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress(e){
+                    console.log("Loaded :", e.loaded)
+                    document.getElementById(metadata.name).value=(e.loaded/e.total)
+                }  
+        }).then((res)=>{
+            // props.setFiles([...props.files,...newlyAddedFilesList])
+            // setDataSent(dataSent+metadata.size)
+            // console.log("dataSent is: ",dataSent)
+            // if(dataSent==totalData)props.setView("HOME")
+
+        }).catch((err)=>{
+            console.log(err);
+        }) 
                 
     }
 
@@ -57,7 +70,7 @@ function Dropbox(props) {
 
         for(var i=0;i<files.length;i++){
             var file=files[i];
-            fun(file,false);
+            fun(file,false,);
         }
         console.log("Dtasent is ",dataSent,totalData)
         
@@ -137,8 +150,8 @@ function Dropbox(props) {
 
     
     return (
-        <div>
-        
+        <div id='dropbox-modal' style={{width:'80%', border:'1px solid red',margin:'10%', zIndex:10, position:'absolute', backgroundColor:'white', display:display}}>
+            <a style={{float:'right', paddingRight:'10px', cursor:'pointer'}} onClick={()=>{props.setIsOpen(false)}}>X</a>
             <div id="drop-area">
                 <form class="my-form">
                     <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>

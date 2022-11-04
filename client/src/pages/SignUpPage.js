@@ -12,17 +12,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import axios from 'axios'
+import {BASE_URI}from '../constants'
 const theme = createTheme();
 
 export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    axios.post(BASE_URI+'/sign-up/',{
+      first_name:data.get('first_name'),
+      last_name:data.get('last_name'),
+      email:data.get('email'),
+      password:data.get('password')
+    }).then((res)=>{
+      console.log(res);
+    }).catch((err)=>{
+      console.log(err)
+    })
   };
 
   return (
@@ -48,7 +55,7 @@ export default function SignUp() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="first_name"
                   required
                   fullWidth
                   id="firstName"
@@ -60,7 +67,7 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="last_name"
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"

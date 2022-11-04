@@ -16,6 +16,7 @@ function App() {
   const [files,setFiles] = useState([])
   const [currDir, setCurrDir] = useState('/')
   const [breadcrumbsList, setBreadcrumbsList] = useState(["Home"])
+  const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('user')))
 
   const defaultContext = {
     currDir:currDir,
@@ -25,8 +26,14 @@ function App() {
     directories:directories,
     setDirectories:setDirectories,
     breadcrumbsList:breadcrumbsList,
-    setBreadcrumbsList:setBreadcrumbsList
+    setBreadcrumbsList:setBreadcrumbsList,
+    user:user,
+    setUser:setUser
   }
+
+  React.useEffect( ()=>{
+    console.log("Rendering App", user,files,currDir, directories, breadcrumbsList)
+  })
   
   return(
     <AppContext.Provider value={defaultContext} >
@@ -34,7 +41,7 @@ function App() {
         <Switch>
           <Route exact path="/"> <Home/></Route>
           <Route exact path="/sign-in">  <SignIn/> </Route> 
-          <Route exact path="/sign-up">  <SignUp/> </Route>  
+          <Route exact path="/sign-up">  <SignUp/> </Route>
         </Switch>
       </Router>
     </AppContext.Provider>

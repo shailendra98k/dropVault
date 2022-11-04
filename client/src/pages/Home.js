@@ -23,14 +23,25 @@ import {BASE_URI} from '../constants'
 import axios from 'axios'
 import { Breadcrumbs } from "@mui/material";
 
-
+import { useHistory } from 'react-router-dom';
+import Dropbox from "../components/Dropbox";
 const Home = () => {
 
+  const {user} = React.useContext(AppContext)
+  const history = useHistory();
+  const [isOpen, setIsOpen] = React.useState(false)
+  React.useEffect(()=>{
+    
+    if (!localStorage.getItem('user')){
+      history.push('/sign-in')
+    }
+  },[])
   return (
 
     <Box sx={{ display: 'flex' }}>
-      <SideNav />
+      <SideNav setIsOpen={setIsOpen} />
       <Body />
+      <Dropbox isOpen={isOpen} setIsOpen={setIsOpen}/>
     </Box>
 
   )
@@ -38,9 +49,45 @@ const Home = () => {
 
 
 
-const SideNav = () => {
+const SideNav = (props) => {
+  const {currDir,user} = React.useContext(AppContext)
+  
+  const createNewFolderHandler = ()=>{
+    const folderName = prompt("Please input folder name!")  
+    const formData=new FormData();
+    formData.append('name', folderName);
+    formData.append('current_dir',currDir);
+    formData.append('user_id',user.id);
+
+    axios.post(BASE_URI+'/addNewFolder',formData).then((res)=>{
+      console.log("Res is: ", res)
+    })
+  }
+
+
   return (
     <Box sx={{ width: '100%', maxWidth: 240, marginLeft: 5, paddingRight: 1 }}>
+      <nav aria-label="secondary mailbox folders">
+        <List>
+          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="UPLOAD" onClick={()=>{props.setIsOpen(true)}} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="New Folder" onClick={createNewFolderHandler} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </nav>
+      <Divider />
       <nav aria-label="main mailbox folders">
         <List>
           <ListItem disablePadding sx={{ marginBottom: '5px' }}>
@@ -116,13 +163,21 @@ const useStyles = makeStyles({
 
 const Body = () => {
 
-  const {currDir, files, setFiles, directories, setDirectories} = React.useContext(AppContext)
+  const {currDir, files,user,setFiles, directories, setDirectories} = React.useContext(AppContext)
   React.useEffect(()=>{
-    axios.get(BASE_URI+currDir).then((res)=>{
-      setDirectories(res.data.directories)
+    const formData = new FormData();
+    formData.append('current_dir',currDir)
+    formData.append('user_id',user.id)
+    axios.post(BASE_URI, formData).then((res)=>{
+      console.log("Daat received:", res)
+      setDirectories(res.data.sub_dirs)
       setFiles(res.data.files)
     })
   },[])
+  React.useEffect(()=>{
+    console.log("Curr Dir is:", currDir)
+    console.log("User is:",user)
+  })
 
   return (
     <Box>
@@ -194,7 +249,7 @@ function FileCard({data}) {
 }
 
 const DirBreadcrumbs = () => {
-  const {breadcrumbsList,setCurrDir, currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
+  const {breadcrumbsList,setCurrDir, user, currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
   var prefix = ""
   const changeDirectory = (path_uri)=>{
     axios.get(BASE_URI+path_uri).then((res)=>{
