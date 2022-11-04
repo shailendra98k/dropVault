@@ -54,6 +54,9 @@ const SideNav = (props) => {
   
   const createNewFolderHandler = ()=>{
     const folderName = prompt("Please input folder name!")  
+    if(!folderName) {
+      return;
+    }
     const formData=new FormData();
     formData.append('name', folderName);
     formData.append('current_dir',currDir);
@@ -184,7 +187,7 @@ const Body = () => {
       <DirBreadcrumbs/>
       <Box sx={{ display: 'flex' }}>
         {directories.map((dir) => {
-          return <FolderCard data={dir} />
+          return <FolderCard data={dir} userid={user.id} />
         })}
       </Box>
 
@@ -199,17 +202,18 @@ const Body = () => {
 
 
 
-function FolderCard({data}) {
+function FolderCard({data, userid}) {
+  console.log("data is:", data)
   const classes = useStyles();
   const {currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
 
   const getIntoFolderHandler = (currDir,name)=>{
-    const str = (currDir=='/')?(currDir+name):(currDir+"/"+name)
-    const url = BASE_URI + str;
-    console.log(str,url)
-    axios.get(url).then((res)=>{
-
-      setDirectories(res.data.directories)
+    const formData = new FormData();
+    formData.append('current_dir',currDir=='/'?currDir+name:currDir+'/'+name)
+    formData.append('user_id',userid)
+    axios.post(BASE_URI,formData).then((res)=>{
+      console.log("Response is: ", res);
+      setDirectories(res.data.sub_dirs)
       setFiles(res.data.files)
 
       setCurrDir(currDir=='/'?(currDir+name):(currDir+"/"+name)) 
@@ -224,7 +228,7 @@ function FolderCard({data}) {
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-folder"></i></div>
           <div><b>{data.name}</b></div> 
-          {data.counts && <div><b>{data.counts} files</b></div>}
+          {/* {data.counts && <div><b>{data.counts} files</b></div>} */}
           {/* {context.user} */}
         </CardContent>
       </Card>
@@ -238,9 +242,9 @@ function FileCard({data}) {
     <Box sx={{ margin: '6px', cursor:'pointer'}}>
       <Card className={classes.root}>
         <CardContent>
-          <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-file-pdf"></i></div>
-          <div><b>{data.name}</b></div> 
-          {data.size && <div><b>{data.size} MB</b></div>}   
+          <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-file-pdf-o"></i></div>
+          <div><b>{data.filename}</b></div> 
+          {/* {data.size && <div><b>{data.size} MB</b></div>}    */}
         </CardContent>
       </Card>
     </Box>
@@ -252,13 +256,15 @@ const DirBreadcrumbs = () => {
   const {breadcrumbsList,setCurrDir, user, currDir, setBreadcrumbsList, setFiles, setDirectories} = React.useContext(AppContext);
   var prefix = ""
   const changeDirectory = (path_uri)=>{
-    axios.get(BASE_URI+path_uri).then((res)=>{
-      setDirectories(res.data.directories)
+    const formData = new FormData();
+    formData.append('current_dir',path_uri)
+    formData.append('user_id',user.id)
+    axios.post(BASE_URI,formData).then((res)=>{
+      setDirectories(res.data.sub_dirs)
       setFiles(res.data.files)
       setCurrDir(path_uri)
       const breadCrumbString = (path_uri=='/')?"":path_uri
       setBreadcrumbsList(("Home"+breadCrumbString).split('/'))
-      
     })
   }
   return (

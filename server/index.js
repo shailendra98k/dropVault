@@ -98,12 +98,12 @@ app.post('/api/v1/upload', function(req,res){
          metadata["size"]=uploaded_files[i].size;
 
          const file = await File.create(metadata);
-         
+         console.log("File cretaed", file)
          dir.files.push(file.id);
 
          let file_path=`${__dirname}/../storage${dir_path}/`+uploaded_files[i].name;
          
-
+         console.log("file path is: ", file_path)
          fs.writeFile(file_path, uploaded_files[i].data, (err) => {
             if (err) {
                res.send("Error");
@@ -193,9 +193,9 @@ app.post('/api/v1/sign-in/', async (req,res)=>{
 // })
 app.post('/api/v1/',(req,res)=>{
    
-   const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
-
-   Directory.findOne({dir_path:dir_path}).populate({path:'files'}).populate({path:'files'}).then((dir)=>{
+   let dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
+   console.log("dir path is: ", dir_path)
+   Directory.findOne({dir_path:dir_path}).populate({path:'files'}).populate({path:'sub_dirs'}).then((dir)=>{
       console.log("Dir and data is:", dir)
       if (!dir) return res.send({
          sub_dirs:[],
