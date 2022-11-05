@@ -69,7 +69,7 @@ const SideNav = (props) => {
 
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 240, marginLeft: 5, paddingRight: 1 }}>
+    <Box sx={{ width: '100%', maxWidth: 240, marginLeft: 5, paddingRight: 1, flexGrow:1}}>
       <nav aria-label="secondary mailbox folders">
         <List>
           <ListItem disablePadding sx={{ marginBottom: '5px' }}>
@@ -149,7 +149,7 @@ const SideNav = (props) => {
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
+    minWidth: 255,
   },
   bullet: {
     display: 'inline-block',
@@ -183,15 +183,15 @@ const Body = () => {
   })
 
   return (
-    <Box>
+    <Box style={{flexGrow:4}}>
       <DirBreadcrumbs/>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', flexWrap:'wrap' }}>
         {directories.map((dir) => {
           return <FolderCard data={dir} userid={user.id} />
         })}
       </Box>
 
-      <Box sx={{ display: 'flex', marginTop: '10px' }}>
+      <Box sx={{ display: 'flex', marginTop: '10px', flexWrap:'wrap' }}>
         {files.map((file) => {
           return <FileCard data={file} />
         })}
@@ -227,6 +227,7 @@ function FolderCard({data, userid}) {
       <Card onClick={()=>getIntoFolderHandler(currDir,data.name)} className={classes.root}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-folder"></i></div>
+          <br></br>
           <div><b>{data.name}</b></div> 
           {/* {data.counts && <div><b>{data.counts} files</b></div>} */}
           {/* {context.user} */}
@@ -249,7 +250,8 @@ function FileCard({data}) {
       <Card className={classes.root} onClick={()=>onClickHandler()}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-file-pdf-o"></i></div>
-          <div><b>{data.filename}</b></div> 
+          <br></br>
+          <p style={{width:'200px', height:'60px', wordWrap:'break-word'}}><b>{data.filename}</b></p> 
           {/* {data.size && <div><b>{data.size} MB</b></div>}    */}
         </CardContent>
       </Card>
