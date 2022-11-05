@@ -19,7 +19,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {BASE_URI} from '../constants'
+import {BASE_URI, STORAGE_URI} from '../constants'
 import axios from 'axios'
 import { Breadcrumbs } from "@mui/material";
 
@@ -238,9 +238,15 @@ function FolderCard({data, userid}) {
 }
 function FileCard({data}) {
   const classes = useStyles();
+  const {currDir, user, setCurrDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
+  const onClickHandler = ()=>{
+    const path_uri = currDir=='/'?`/${user.id}/${data.filename}`:`/${user.id}${currDir}/${data.filename}`
+    window.open(STORAGE_URI+path_uri,'_blank');
+  }
+  
   return (
     <Box sx={{ margin: '6px', cursor:'pointer'}}>
-      <Card className={classes.root}>
+      <Card className={classes.root} onClick={()=>onClickHandler()}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-file-pdf-o"></i></div>
           <div><b>{data.filename}</b></div> 
