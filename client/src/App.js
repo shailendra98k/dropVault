@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import SignIn from './pages/SignInPage';
 import SignUp from './pages/SignUpPage';
 import React , {useState}  from 'react';
+import { Header } from './Header';
 
 
 export const AppContext = React.createContext();
@@ -37,6 +38,7 @@ function App() {
   
   return(
     <AppContext.Provider value={defaultContext} >
+      <Header></Header>
       <Router>
         <Switch>
           <Route exact path="/"> <Home/></Route>

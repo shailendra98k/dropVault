@@ -25,6 +25,7 @@ import { Breadcrumbs } from "@mui/material";
 
 import { useHistory } from 'react-router-dom';
 import Dropbox from "../components/Dropbox";
+import { FILE_CARD_CN , FOLDER_CARD_CN, SIDE_NAV_ID} from "../classNameConstant";
 const Home = () => {
 
   const {user} = React.useContext(AppContext)
@@ -38,7 +39,7 @@ const Home = () => {
   },[])
   return (
 
-    <Box sx={{ display: 'flex' }}>
+    <Box id={'home-container'} sx={{ display: 'flex' }}>
       <SideNav setIsOpen={setIsOpen} />
       <Body />
       <Dropbox isOpen={isOpen} setIsOpen={setIsOpen}/>
@@ -69,7 +70,7 @@ const SideNav = (props) => {
 
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 240, marginLeft: 5, paddingRight: 1, flexGrow:1}}>
+    <Box id={SIDE_NAV_ID} sx={{ width: '100%', maxWidth: 240, marginLeft: 5, paddingRight: 1, flexGrow:1}}>
       <nav aria-label="secondary mailbox folders">
         <List>
           <ListItem disablePadding sx={{ marginBottom: '5px' }}>
@@ -90,7 +91,7 @@ const SideNav = (props) => {
           </ListItem>
         </List>
       </nav>
-      <Divider />
+      {/* <Divider />
       <nav aria-label="main mailbox folders">
         <List>
           <ListItem disablePadding sx={{ marginBottom: '5px' }}>
@@ -139,7 +140,7 @@ const SideNav = (props) => {
             </ListItemButton>
           </ListItem>
         </List>
-      </nav>
+      </nav> */}
     </Box>
   );
 }
@@ -223,7 +224,7 @@ function FolderCard({data, userid}) {
   }
 
   return (
-    <Box sx={{ margin: '6px', cursor:'pointer'}}>
+    <Box className={FOLDER_CARD_CN} sx={{ margin: '6px', cursor:'pointer'}}>
       <Card onClick={()=>getIntoFolderHandler(currDir,data.name)} className={classes.root}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-folder"></i></div>
@@ -246,7 +247,7 @@ function FileCard({data}) {
   }
   
   return (
-    <Box sx={{ margin: '6px', cursor:'pointer'}}>
+    <Box className={FILE_CARD_CN} sx={{ margin: '6px', cursor:'pointer'}}>
       <Card className={classes.root} onClick={()=>onClickHandler()}>
         <CardContent>
           <div><i style={{fontSize:'32px', color:'grey'}} class="fa fa-file-pdf-o"></i></div>
@@ -279,6 +280,7 @@ const DirBreadcrumbs = () => {
      <Breadcrumbs
       separator="/"
       aria-label="breadcrumb"
+      style={{padding:'20px'}}
     > 
     {breadcrumbsList.map((item,index)=>{
      let path_uri;
