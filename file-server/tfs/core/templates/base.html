@@ -1,0 +1,7 @@
+# core/templates/base.html
+
+<h1>Document Manager</h1>
+<p>Logged in as {{user.get_full_name}}</p>
+<p><a href="{% url "logout" %}">Logout</a></p>
+{% block content %}
+{% endblock %}

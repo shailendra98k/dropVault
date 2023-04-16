@@ -16,9 +16,14 @@ const User = require('./Model/User')
 const { createDecipher } = require('crypto');
 const s3=require( './S3/s3')
 const {STORAGE_DIR_PATH} = require('./config/storage')
+const axios = require('axios')
 app.use(fileUpload())
  
-app.use(cors())
+var corsOptions = {
+   origin: ["http://www.example.com/","http://localhost:3000"],
+   optionsSuccessStatus: 200 // For legacy browser support
+   }
+app.use(cors(corsOptions))
 app.use(bodyParser());
 
 app.get('/',(req,res)=>{
@@ -76,6 +81,17 @@ app.post('/api/v1/upload', function(req,res){
    else{
       uploaded_files[0]=req.files.uploaded_files;
    }
+
+   var bodyFormData = new FormData();
+   bodyFormData.append('file', "Hi")
+   bodyFormData.append('filename', 'abcccdd.txt');
+   bodyFormData.append('description',"aded from React Dropbox" );
+
+   axios.post("http://127.0.0.1:8001/document-add/",data, headers).then((res)=>{
+        console.log("Resonse from file server: ", res.data)
+   }).catch((err)=>{
+        console.log("Error from file server: ",err)
+   })
 
    console.log("Req body : ", req.body)
    console.log("Req fils : ", req.files)

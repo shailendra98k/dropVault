@@ -184,7 +184,7 @@ const Body = () => {
   })
 
   return (
-    <Box style={{flexGrow:4}}>
+    <Box style={{flexGrow:4, height:'90vh', overflow:'scroll'}}>
       <DirBreadcrumbs/>
       <Box sx={{ display: 'flex', flexWrap:'wrap' }}>
         {directories.map((dir) => {
@@ -280,7 +280,7 @@ const DirBreadcrumbs = () => {
      <Breadcrumbs
       separator="/"
       aria-label="breadcrumb"
-      style={{padding:'20px'}}
+      style={{padding:'20px',position:'fixed', top:'16px', paddingTop:'0px'}}
     > 
     {breadcrumbsList.map((item,index)=>{
      let path_uri;
