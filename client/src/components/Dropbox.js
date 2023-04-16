@@ -55,6 +55,22 @@ function Dropbox(props) {
                     document.getElementById(metadata.name).value=(e.loaded/e.total)
                 }
         }).then((res)=>{
+        console.log("response aftre document upload from file server :", res)
+          const data = {
+              'user_id':user.id,
+              'current_dir':currDir,
+              'name':file.name,
+              'size':file.size,
+              'type':0,
+              'id':res.data.id
+          }
+
+            axios.post(`${BASE_URI}/upload`, data).then((res)=>{
+             console.log("response aftre document upload from express server :", res)
+            }).catch((err)=>{
+              console.log("Error aftre document upload from express server :", err)
+            })
+
             // props.setFiles([...props.files,...newlyAddedFilesList])
             // setDataSent(dataSent+metadata.size)
             // console.log("dataSent is: ",dataSent)

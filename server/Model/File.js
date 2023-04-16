@@ -13,6 +13,10 @@ const File = new Schema ({
     type:{
         type: String,
         required: true
+    },
+    id:{
+        type: String,
+        required: true
     }
 },{timestamps:true})
 module.exports=mongoose.model('File', File);

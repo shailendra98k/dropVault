@@ -1,5 +1,6 @@
 # core/views.py
 import http.client
+import mimetypes
 import os
 
 from django import views
@@ -91,7 +92,7 @@ class DocumentCreate(APIView):
 class DocumentDownload(View):
     def get(self, request, relative_path):
         document = get_object_or_404(Document, id=relative_path)
-
-        absolute_path = '{}/{}'.format(settings.MEDIA_ROOT, relative_path)
-        response = HttpResponse(content=document.file, content_type='image/png')
+        content_type =mimetypes.guess_type(document.file.name)[0]
+        absolute_path = '{}/{}'.format(settings.MEDIA_ROOT, document)
+        response = FileResponse(open(absolute_path, 'rb'), as_attachment=False)
         return response

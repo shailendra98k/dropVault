@@ -75,26 +75,22 @@ app.post('/api/v1/addNewFolder',(req,res)=>{
 
 app.post('/api/v1/upload', function(req,res){ 
 
-   var len=(req.files.uploaded_files.length)
-   var uploaded_files=[]
-   if(len)uploaded_files=req.files.uploaded_files;
-   else{
-      uploaded_files[0]=req.files.uploaded_files;
-   }
+   console.log("Req is: ", req.body);
 
-   var bodyFormData = new FormData();
-   bodyFormData.append('file', "Hi")
-   bodyFormData.append('filename', 'abcccdd.txt');
-   bodyFormData.append('description',"aded from React Dropbox" );
 
-   axios.post("http://127.0.0.1:8001/document-add/",data, headers).then((res)=>{
-        console.log("Resonse from file server: ", res.data)
-   }).catch((err)=>{
-        console.log("Error from file server: ",err)
-   })
-
-   console.log("Req body : ", req.body)
-   console.log("Req fils : ", req.files)
+//   var bodyFormData = new FormData();
+//   bodyFormData.append('file', "Hi")
+//   bodyFormData.append('filename', 'abcccdd.txt');
+//   bodyFormData.append('description',"aded from React Dropbox" );
+//
+//   axios.post("http://127.0.0.1:8001/document-add/",data, headers).then((res)=>{
+//        console.log("Resonse from file server: ", res.data)
+//   }).catch((err)=>{
+//        console.log("Error from file server: ",err)
+//   })
+//
+//   console.log("Req body : ", req.body)
+//   console.log("Req fils : ", req.files)
    
    
    const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
@@ -105,31 +101,39 @@ app.post('/api/v1/upload', function(req,res){
       console.log("Dir receive drom databse is, ", dir)
       console.log("Request body is: ",req.body)
 
-      
-      for( var i=0;i<uploaded_files.length;i++){
-      
-         var metadata={};
-         metadata["filename"]=uploaded_files[i].name;
-         metadata["type"]=uploaded_files[i].mimetype;
-         metadata["size"]=uploaded_files[i].size;
 
-         const file = await File.create(metadata);
-         console.log("File cretaed", file)
-         dir.files.push(file.id);
+      var metadata={};
+     metadata["filename"]=req.body.name;
+     metadata["size"]=req.body.size;
+     metadata["type"]=req.body.type;
+     metadata["id"]=req.body.id;
 
-         let file_path=`${__dirname}/../storage${dir_path}/`+uploaded_files[i].name;
-         
-         console.log("file path is: ", file_path)
-         fs.writeFile(file_path, uploaded_files[i].data, (err) => {
-            if (err) {
-               res.send("Error");
-            }
-            else {
-               console.log("uploaded successfully..."); 
-            }
-         });
-      }
+      const file = await File.create(metadata);
+      dir.files.push(file._id);
       dir.save();
+//      for( var i=0;i<uploaded_files.length;i++){
+//
+//         var metadata={};
+//         metadata["filename"]=uploaded_files[i].name;
+//         metadata["type"]=uploaded_files[i].mimetype;
+//         metadata["size"]=uploaded_files[i].size;
+//
+//         const file = await File.create(metadata);
+//         console.log("File cretaed", file)
+//         dir.files.push(file.id);
+//
+//         let file_path=`${__dirname}/../storage${dir_path}/`+uploaded_files[i].name;
+//
+//         console.log("file path is: ", file_path)
+//         fs.writeFile(file_path, uploaded_files[i].data, (err) => {
+//            if (err) {
+//               res.send("Error");
+//            }
+//            else {
+//               console.log("uploaded successfully...");
+//            }
+//         });
+//      }
    })
    res.status(200)
    
