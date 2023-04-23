@@ -14,9 +14,16 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import {BASE_URI}from '../constants'
+import { useHistory } from 'react-router-dom';
 const theme = createTheme();
 
 export default function SignUp() {
+   const history = useHistory();
+  React.useEffect(()=>{
+      if (sessionStorage.getItem('user')){
+          history.push('/')
+       }
+  })
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

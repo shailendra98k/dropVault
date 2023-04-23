@@ -17,7 +17,7 @@ function App() {
   const [files,setFiles] = useState([])
   const [currDir, setCurrDir] = useState('/')
   const [breadcrumbsList, setBreadcrumbsList] = useState(["Home"])
-  const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('user')))
+  const [user, setUser] = useState(JSON.parse(window.sessionStorage.getItem('user')))
 
   const defaultContext = {
     currDir:currDir,

@@ -33,7 +33,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = React.useState(false)
   React.useEffect(()=>{
     
-    if (!localStorage.getItem('user')){
+    if (!sessionStorage.getItem('user')){
       history.push('/sign-in')
     }
   },[])

@@ -21,6 +21,12 @@ const theme = createTheme();
 export default function SignIn() {
   const {setUser, setCurrDir} = React.useContext(AppContext)
   const history = useHistory();
+  React.useEffect(()=>{
+      if (sessionStorage.getItem('user')){
+          history.push('/')
+       }
+  })
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -29,7 +35,7 @@ export default function SignIn() {
       password:data.get('password')
     }).then((res)=>{
       console.log("Res is:", res);
-      localStorage.setItem('user',JSON.stringify(res.data))
+      sessionStorage.setItem('user',JSON.stringify(res.data))
 
       window.location.href ='/'
 
