@@ -4,6 +4,7 @@ import $ from 'jquery'
 import {useState,useEffect, useContext} from 'react'
 import {AppContext} from '../App'
 import { BASE_URI } from '../constants';
+import './css/Dropbox.css'
 
 function Dropbox(props) {
 
@@ -166,7 +167,7 @@ function Dropbox(props) {
 
     
     return (
-        <div id='dropbox-modal' style={{margin:'auto', zIndex:10, position:'absolute', width:'100%', top:'30%', backgroundColor:'white', display:display}}>
+        <div id='dropbox-modal' style={{display:display}}>
             <a style={{float:'right', paddingRight:'10px', cursor:'pointer'}} onClick={()=>{props.setIsOpen(false)}}>X</a>
             <div id="drop-area">
                 <form class="my-form">
