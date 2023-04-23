@@ -184,7 +184,7 @@ const Body = () => {
   })
 
   return (
-    <Box style={{flexGrow:4}}>
+    <Box style={{flexGrow:4, height:'90vh', overflow:'scroll'}}>
       <DirBreadcrumbs/>
       <Box sx={{ display: 'flex', flexWrap:'wrap' }}>
         {directories.map((dir) => {
@@ -242,8 +242,9 @@ function FileCard({data}) {
   const classes = useStyles();
   const {currDir, user, setCurrDir, setDirectories, setFiles, setBreadcrumbsList} = React.useContext(AppContext)
   const onClickHandler = ()=>{
-    const path_uri = currDir=='/'?`/${user.id}/${data.filename}`:`/${user.id}${currDir}/${data.filename}`
-    window.open(STORAGE_URI+path_uri,'_blank');
+//    const path_uri = currDir=='/'?`/${user.id}/${data.id}`:`/${user.id}${currDir}/${data.id}`
+//    window.open(STORAGE_URI+path_uri,'_blank');
+    window.open('http://localhost:8001/media/'+data.id,'_blank');
   }
   
   return (
@@ -280,7 +281,7 @@ const DirBreadcrumbs = () => {
      <Breadcrumbs
       separator="/"
       aria-label="breadcrumb"
-      style={{padding:'20px'}}
+      style={{padding:'20px',position:'fixed', top:'16px', paddingTop:'0px'}}
     > 
     {breadcrumbsList.map((item,index)=>{
      let path_uri;

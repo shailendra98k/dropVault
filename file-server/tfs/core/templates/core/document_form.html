@@ -1,0 +1,10 @@
+# core/templates/core/document_form.html
+
+{% extends 'base.html' %}
+{% block content %}
+<h1>Add Document</h1>
+<form method="POST" enctype="multipart/form-data">
+    {{form.as_p}}
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

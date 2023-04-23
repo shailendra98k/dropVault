@@ -164,10 +164,10 @@ background: rgb(137, 156, 238);
 #drop-area {
   border: 2px dashed #ccc;
   border-radius: 20px;
-  width: 480px;
+  width: 60%;
+  margin: auto;
   font-family: sans-serif;
-  margin: 100px auto;
-  padding: 20px;
+  padding: 72px;
 }
 #submitBtn{
     position: fixed;

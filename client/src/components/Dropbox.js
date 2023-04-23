@@ -34,7 +34,7 @@ function Dropbox(props) {
             
         file["id"]=Date.now();
         file["date"]=(new Date()).toLocaleDateString();
-        formData.append('uploaded_files',file);
+        formData.append('file',file);
         var metadata={
             "name":file.name,
             "size":file.size,
@@ -48,13 +48,29 @@ function Dropbox(props) {
         formData.append('size', file.size);
         formData.append('type', 0);
 
-        axios.post(`${BASE_URI}/upload`, formData,{
+        axios.post('http://localhost:8001/document-add/', formData,{
                 headers: { "Content-Type": "multipart/form-data" },
                 onUploadProgress(e){
                     console.log("Loaded :", e.loaded)
                     document.getElementById(metadata.name).value=(e.loaded/e.total)
-                }  
+                }
         }).then((res)=>{
+        console.log("response aftre document upload from file server :", res)
+          const data = {
+              'user_id':user.id,
+              'current_dir':currDir,
+              'name':file.name,
+              'size':file.size,
+              'type':0,
+              'id':res.data.id
+          }
+
+            axios.post(`${BASE_URI}/upload`, data).then((res)=>{
+             console.log("response aftre document upload from express server :", res)
+            }).catch((err)=>{
+              console.log("Error aftre document upload from express server :", err)
+            })
+
             // props.setFiles([...props.files,...newlyAddedFilesList])
             // setDataSent(dataSent+metadata.size)
             // console.log("dataSent is: ",dataSent)
@@ -150,7 +166,7 @@ function Dropbox(props) {
 
     
     return (
-        <div id='dropbox-modal' style={{width:'80%', border:'1px solid red',margin:'10%', zIndex:10, position:'absolute', backgroundColor:'white', display:display}}>
+        <div id='dropbox-modal' style={{margin:'auto', zIndex:10, position:'absolute', width:'100%', top:'30%', backgroundColor:'white', display:display}}>
             <a style={{float:'right', paddingRight:'10px', cursor:'pointer'}} onClick={()=>{props.setIsOpen(false)}}>X</a>
             <div id="drop-area">
                 <form class="my-form">
