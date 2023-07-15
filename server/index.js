@@ -14,8 +14,8 @@ const Directory = require('./Model/Directory');
 const File = require('./Model/File')
 const User = require('./Model/User')
 const { createDecipher } = require('crypto');
-const s3=require( './S3/s3')
-const {STORAGE_DIR_PATH} = require('./config/storage')
+//const s3=require( './S3/s3')
+//const {STORAGE_DIR_PATH} = require('./config/storage')
 const axios = require('axios')
 app.use(fileUpload())
  
