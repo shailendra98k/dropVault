@@ -9,6 +9,10 @@ const User = sequelize.define('user', {
         autoIncrement: true,
         primaryKey: true
     },
+    identifier: {
+        type: DataTypes.UUID,
+        allowNull: true
+    },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -24,6 +28,10 @@ const User = sequelize.define('user', {
     },
     last_name: {
         type: DataTypes.STRING,
+        allowNull: true
+    },
+    verified :{
+        type: DataTypes.BOOLEAN,
         allowNull: true
     }
 });
