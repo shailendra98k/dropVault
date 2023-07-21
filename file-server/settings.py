@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'core.middleware.StackOverflowMiddleware'
 ]
 
-ROOT_URLCONF = 'tfs-1.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tfs-1.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
@@ -129,6 +129,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/file-server/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'file-server/media')
 LOGOUT_REDIRECT_URL = '/'
