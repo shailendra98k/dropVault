@@ -49,7 +49,7 @@ function Dropbox(props) {
         formData.append('size', file.size);
         formData.append('type', 0);
 
-        axios.post('http://localhost:8001/document-add/', formData,{
+        axios.post('http://localhost/document-add/', formData,{
                 headers: { "Content-Type": "multipart/form-data" },
                 onUploadProgress(e){
                     console.log("Loaded :", e.loaded)

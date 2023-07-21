@@ -11,7 +11,7 @@ function NewFolder(){
 
     const onClickHandler=()=>{
        const dir= __dirname+'server/upload/vid.mkv';
-       fetch(`http://localhost:8000/download${dir}`).then(resp => resp.blob())
+       fetch(`http://localhost/download${dir}`).then(resp => resp.blob())
        .then(blob => {
         console.log(blob)
          const url = window.URL.createObjectURL(blob);

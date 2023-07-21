@@ -244,7 +244,7 @@ function FileCard({data}) {
   const onClickHandler = ()=>{
 //    const path_uri = currDir=='/'?`/${user.id}/${data.id}`:`/${user.id}${currDir}/${data.id}`
 //    window.open(STORAGE_URI+path_uri,'_blank');
-    window.open('http://localhost:8001/media/'+data.id,'_blank');
+    window.open('http://localhost/media/'+data.id,'_blank');
   }
   
   return (
