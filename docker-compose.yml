@@ -1,0 +1,42 @@
+version: '3'
+services:
+  ui:
+    platform: linux/amd64
+    container_name: client-ctn
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      tags:
+        - 'shailendra98k/fakedropbox_ui'
+    ports:
+      - "3000:3000"
+  core:
+    platform: linux/amd64
+    container_name: server-ctn
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      tags:
+        - 'shailendra98k/fakedropbox_core'
+    ports:
+      - "8000:8000"
+  server:
+    platform: linux/amd64
+    container_name: file-server-ctn
+    build:
+      context: ./file-server
+      dockerfile: Dockerfile
+      tags:
+        - 'shailendra98k/fakedropbox_file_server'
+    ports:
+      - "8001:8001"
+  nginx:
+    platform: linux/amd64
+    container_name: nginx-ctn
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      tags:
+        - 'shailendra98k/fakedropbox_nginx'
+    ports:
+      - "80:80"

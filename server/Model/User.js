@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize('dropbox', 'root', '', {
-    host: '127.0.0.1',
+const sequelize = new Sequelize('dropbox', 'admin', 'kxl64444', {
+    host: 'fakedropbox.cgyxp9fhyzb8.ap-south-1.rds.amazonaws.com',
     dialect: 'mysql'
 });
 const User = sequelize.define('user', {

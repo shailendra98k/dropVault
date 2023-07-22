@@ -6,8 +6,8 @@ const emailConfig = {
     port: 587,
     secure: false,
     auth: {
-        user: '',
-        pass: ''
+        user: 'shailendra.kumar@fakedropbox.fun',
+        pass: 's3srz_nR'
     }
 };
 const mailer = nodemailer.createTransport(emailConfig);

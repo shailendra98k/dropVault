@@ -80,9 +80,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dropbox',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
+        'USER': 'admin',
+        'PASSWORD': 'kxl64444',
+        'HOST':'fakedropbox.cgyxp9fhyzb8.ap-south-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
