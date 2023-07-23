@@ -1,5 +1,5 @@
 # Use an appropriate Node.js base image
-FROM node:14
+FROM node:14 AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,12 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
+RUN npm run build
+
+FROM node:14-slim
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 8000
 
-CMD ["npm", "start"]
+CMD ["node", "dist/bundle.js"]
