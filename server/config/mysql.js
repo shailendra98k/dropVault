@@ -1,9 +1,10 @@
+require('dotenv').config();
 const mysql = require('mysql');
 const mySQLConnection = mysql.createConnection({
     port:3306,
-    host: 'fakedropbox.cgyxp9fhyzb8.ap-south-1.rds.amazonaws.com',
-    user: 'admin',
-    password: 'kxl64444',
+    host: process.env.MYSQL_DB_URL,
+    user: process.env.MYSQL_DB_USER,
+    password: process.env.MYSQL_DB_PASSWORD,
     database: 'dropbox'
 });
 

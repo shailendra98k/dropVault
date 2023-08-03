@@ -4,3 +4,5 @@
 /file-server/.venv
 /.idea
 /file-server/media
+/server/.env
+/file-server/.env

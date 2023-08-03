@@ -1,17 +1,18 @@
-# Use an appropriate Python + Django base image
-FROM python:3.9
+FROM python:3.7-slim
 
 WORKDIR /app
+COPY requirements.txt .
 
-# Copy the Django app files to the container
+#https://stackoverflow.com/questions/59554493/unable-to-fire-a-docker-build-for-django-and-mysql
+RUN apt-get update
+RUN apt-get install python3-dev default-libmysqlclient-dev gcc -y
+
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
 
-RUN pip install -r requirements.txt
+EXPOSE 8001
 
-EXPOSE 8000
-
-# Grant execute permissions to the entrypoint script
 RUN chmod +x ./entrypoint.sh
 
-# Set the entry point to the script
 ENTRYPOINT ["./entrypoint.sh"]
