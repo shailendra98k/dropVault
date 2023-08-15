@@ -5,15 +5,15 @@ import { BASE_URI } from "../../constants";
 import { SIDE_NAV_ID } from "../../classNameConstant";
 import { Box } from "@mui/material";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/Inbox";
 import { Divider } from "@mui/material";
+import { ActionItem } from "../actionItem/ActionItem";
 
 export const ActionBar = (props) => {
   const { currDir, user } = React.useContext(AppContext);
+
+  const openUploadModalHandler = () => {
+    props.setIsOpen(true);
+  };
 
   const createNewFolderHandler = () => {
     const folderName = prompt("Please input folder name!");
@@ -43,80 +43,23 @@ export const ActionBar = (props) => {
     >
       <nav aria-label="secondary mailbox folders">
         <List>
-          <ListItem disablePadding sx={{ marginBottom: "5px" }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="UPLOAD"
-                onClick={() => {
-                  props.setIsOpen(true);
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ marginBottom: "5px" }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="New Folder"
-                onClick={createNewFolderHandler}
-              />
-            </ListItemButton>
-          </ListItem>
+          <ActionItem action={openUploadModalHandler} actionText="UPLOAD" />
+          <ActionItem action={createNewFolderHandler} actionText="New Folder" />
         </List>
       </nav>
       <Divider />
       <nav aria-label="main mailbox folders">
         <List>
-          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="HOME" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="ALL FILES" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="VIDEOS" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="PHOTOS" />
-            </ListItemButton>
-          </ListItem>
+          <ActionItem actionText="HOME" />
+          <ActionItem actionText="ALL FILES" />
+          <ActionItem actionText="VIDEOS" />
+          <ActionItem actionText="PHOTOS" />
         </List>
       </nav>
       <Divider />
       <nav aria-label="secondary mailbox folders">
         <List>
-          <ListItem disablePadding sx={{ marginBottom: '5px' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="RECENT" />
-            </ListItemButton>
-          </ListItem>
+          <ActionItem actionText="RECENT" />
         </List>
       </nav>
     </Box>
