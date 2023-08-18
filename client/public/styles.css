@@ -9,13 +9,6 @@
     #home-container{
         flex-direction: column;
     }
-    #sidenav{
-        display: none;
-        position:absolute;
-        background-color: white;
-        z-index: 2;
-        margin-left: 20px;
-    }
     #hamburger{
         display: inline;
     }

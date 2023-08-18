@@ -1,18 +1,19 @@
-import Recat from 'react';
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
+import {useActionListContext} from "./context/ActionListContext";
 
-export const Header = ()=>{
-    return (
-        <div  style={{padding:'20px'}}>
-            <span id='hamburger' onClick={()=>{
-                const displayStyle = document.getElementById('sidenav').style.display;
-                if(!displayStyle || displayStyle=='none'){
-                    document.getElementById('sidenav').style.display = 'block'
-                }else{
-                    document.getElementById('sidenav').style.display='none'
-                }
-            }}><MenuIcon/> &nbsp; &nbsp;</span>
-            <span>Your DropBox</span>
-        </div>
-    )
-}
+export const Header = () => {
+  const { isActionListOpen, setIsActionListOpen} = useActionListContext();
+  return (
+    <div style={{ padding: "20px" }}>
+      <span
+        id="hamburger"
+        onClick={() => {
+          setIsActionListOpen(true);
+        }}
+      >
+        <MenuIcon /> &nbsp; &nbsp;
+      </span>
+      <span>Your DropBox</span>
+    </div>
+  );
+};
