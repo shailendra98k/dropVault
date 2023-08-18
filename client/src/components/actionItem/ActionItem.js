@@ -7,14 +7,13 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/Inbox";
 export const ActionItem = (props) => {
   return (
-    <ListItem disablePadding sx={{ marginBottom: "5px" }}>
+    <ListItem onClick={props.action} id={props.id} disablePadding sx={{ marginBottom: "5px", display: props.hide?'none':'initial' }}>
       <ListItemButton>
         <ListItemIcon>
           <InboxIcon />
         </ListItemIcon>
         <ListItemText
           primary={props.actionText}
-          onClick={props.action}
         />
       </ListItemButton>
     </ListItem>

@@ -6,6 +6,8 @@ import SignIn from "./pages/SignInPage";
 import SignUp from "./pages/SignUpPage";
 import React, { useState } from "react";
 import HeaderV2 from "./components/header/Header";
+import { DeviceContextProvider } from "./context/DeviceContext";
+import { ActionListContextProvider } from "./context/ActionListContext";
 
 export const AppContext = React.createContext();
 function App() {
@@ -42,25 +44,29 @@ function App() {
   });
 
   return (
-    <AppContext.Provider value={defaultContext}>
-      <HeaderV2 />
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            {" "}
-            <Home />
-          </Route>
-          <Route exact path="/sign-in">
-            {" "}
-            <SignIn />{" "}
-          </Route>
-          <Route exact path="/sign-up">
-            {" "}
-            <SignUp />{" "}
-          </Route>
-        </Switch>
-      </Router>
-    </AppContext.Provider>
+    <DeviceContextProvider>
+      <ActionListContextProvider>
+        <AppContext.Provider value={defaultContext}>
+          <HeaderV2 />
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                {" "}
+                <Home />
+              </Route>
+              <Route exact path="/sign-in">
+                {" "}
+                <SignIn />{" "}
+              </Route>
+              <Route exact path="/sign-up">
+                {" "}
+                <SignUp />{" "}
+              </Route>
+            </Switch>
+          </Router>
+        </AppContext.Provider>
+      </ActionListContextProvider>
+    </DeviceContextProvider>
   );
 }
 

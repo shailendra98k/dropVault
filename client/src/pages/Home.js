@@ -19,7 +19,7 @@ const Home = () => {
   }, [history]);
   return (
     <Box id={"home-container"} sx={{ display: "flex" }}>
-      <ActionBar setIsOpen={setIsOpen} />
+      <ActionBar/>
       <Body />
       <Dropbox isOpen={isOpen} setIsOpen={setIsOpen} />
     </Box>
