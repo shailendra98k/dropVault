@@ -11,7 +11,6 @@ import { ActionBar } from "../components/actionBar/ActionBar";
 
 const Home = () => {
   const history = useHistory();
-  const [isOpen, setIsOpen] = React.useState(false);
   React.useEffect(() => {
     if (!sessionStorage.getItem("user")) {
       history.push("/sign-in");
@@ -21,7 +20,7 @@ const Home = () => {
     <Box id={"home-container"} sx={{ display: "flex" }}>
       <ActionBar/>
       <Body />
-      <Dropbox isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Dropbox/>
     </Box>
   );
 };

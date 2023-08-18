@@ -5,17 +5,18 @@ import { useEffect } from "react";
 import { AppContext } from "../App";
 import { BASE_URI } from "../constants";
 import "./css/Dropbox.css";
-
+import { useUploadModalContext } from "../context/UploadModalContext";
 function Dropbox(props) {
   const { currDir, user } = React.useContext(AppContext);
   const [display, setDisplay] = React.useState("none");
+  const { isUploadModalOpen, setIsUploadModalOpen } = useUploadModalContext();
   React.useEffect(() => {
-    if (props.isOpen) {
+    if (isUploadModalOpen) {
       setDisplay("block");
     } else {
       setDisplay("none");
     }
-  }, [props.isOpen]);
+  }, [isUploadModalOpen]);
   var totalData = 0;
   var dataSent = 0;
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,7 +175,7 @@ function Dropbox(props) {
       <a
         style={{ float: "right", paddingRight: "10px", cursor: "pointer" }}
         onClick={() => {
-          props.setIsOpen(false);
+          setIsUploadModalOpen(false);
         }}
       >
         X

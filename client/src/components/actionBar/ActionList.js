@@ -9,20 +9,24 @@ import { Divider } from "@mui/material";
 import { ActionItem } from "../actionItem/ActionItem";
 import { useDeviceContext } from "../../context/DeviceContext";
 import { useActionListContext } from "../../context/ActionListContext";
+import { useUploadModalContext } from "../../context/UploadModalContext";
 
 export const ActionList = (props) => {
   const { currDir, user } = React.useContext(AppContext);
-  const { setIsActionListOpen} = useActionListContext();
+  const { setIsActionListOpen } = useActionListContext();
+  const { setIsUploadModalOpen } = useUploadModalContext();
   const { isS } = useDeviceContext();
 
   const openUploadModalHandler = () => {
-    props.setIsOpen(true);
+    setIsActionListOpen(false);
+    setIsUploadModalOpen(true);
   };
   const closeActionListhandler = () => {
     setIsActionListOpen(false);
-  }
+  };
 
   const createNewFolderHandler = () => {
+    setIsActionListOpen(false);
     const folderName = prompt("Please input folder name!");
     if (!folderName) {
       return;
@@ -48,10 +52,13 @@ export const ActionList = (props) => {
         margin: 0,
       }}
     >
-     
       <nav aria-label="secondary mailbox folders">
         <List>
-          <ActionItem action={closeActionListhandler} hide={!isS} actionText="Close" />
+          <ActionItem
+            action={closeActionListhandler}
+            hide={!isS}
+            actionText="Close"
+          />
         </List>
       </nav>
       <Divider />
