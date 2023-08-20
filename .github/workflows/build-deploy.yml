@@ -50,10 +50,10 @@ jobs:
       - name: Stop ECS Task
         run: |
           # Using AWS CLI to run the ECS task using the updated task definition
-          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_nginx
-          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_ui
-          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_core
-          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_file_server    
+          aws ecs stop-task --cluster fakeDropbox --tasks *
+          aws ecs stop-task --cluster fakeDropbox --tasks *
+          aws ecs stop-task --cluster fakeDropbox --tasks *
+          aws ecs stop-task --cluster fakeDropbox --tasks * 
 
       - name: Run ECS Task
         run: |
