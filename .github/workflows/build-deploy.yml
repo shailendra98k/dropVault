@@ -52,8 +52,7 @@ jobs:
           TASK=`aws ecs list-tasks --cluster fakeDropbox --query 'taskArns'`
           aws ecs run-stop --task TASKS[0]
           aws ecs run-stop --task TASKS[1]
-          aws ecs run-stop --task TASKS[2]
-          aws ecs run-stop --task TASKS[3]
+
 
 #      - name: Run ECS Task
 #        run: |
