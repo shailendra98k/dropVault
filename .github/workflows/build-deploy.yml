@@ -15,7 +15,6 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          # Build the Docker image using the Dockerfile in the repository root
           docker-compose build
 
       - name: Login to Docker Hub
@@ -30,12 +29,25 @@ jobs:
           docker push shailendra98k/fakedropbox_core:latest
           docker push shailendra98k/fakedropbox_file_server:latest
           docker push shailendra98k/fakedropbox_ui:latest
-      - name: Deploy to ECS
+
+      - name: Install AWS CLI
         run: |
-          # Install the AWS CLI
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install
 
-          # Update the ECS service with the new Docker image
-          aws ecs update-service --cluster your-cluster-name --service your-service-name --force-new-deployment
+      - name: Update ECS Task Definition
+        run: |
+          # Using AWS CLI to update the ECS task definition with the new image tag
+          aws ecs update-task-definition --task-definition dropbox_nginx --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest"}]'
+          aws ecs update-task-definition --task-definition dropbox_ui --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest"}]'
+          aws ecs update-task-definition --task-definition dropbox_core --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest"}]'
+          aws ecs update-task-definition --task-definition dropbox_file_server --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest"}]'
+
+      - name: Run ECS Task
+        run: |
+          # Using AWS CLI to run the ECS task using the updated task definition
+          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_nginx
+          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_ui
+          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_core
+          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_file_server
