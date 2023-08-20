@@ -10,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#
-#      - name: Build Docker Image
-#        run: |
-#          docker-compose build
-#
-#      - name: Login to Docker Hub
-#        uses: docker/login-action@v1
-#        with:
-#          username: shailendra98k
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#      - name: Push Docker Image to Docker Hub
-#        run: |
-#          docker push shailendra98k/fakedropbox_nginx:latest
-#          docker push shailendra98k/fakedropbox_core:latest
-#          docker push shailendra98k/fakedropbox_file_server:latest
-#          docker push shailendra98k/fakedropbox_ui:latest
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: |
+          docker-compose build
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: shailendra98k
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker push shailendra98k/fakedropbox_nginx:latest
+          docker push shailendra98k/fakedropbox_core:latest
+          docker push shailendra98k/fakedropbox_file_server:latest
+          docker push shailendra98k/fakedropbox_ui:latest
 #
       - name: Configure AWS Credentials
         run: |
@@ -38,14 +38,14 @@ jobs:
           echo "region"="ap-south-1" >> ~/.aws/credentials
           echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
           echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-#
-#      - name: Update ECS Task Definition
-#        run: |
-#          # Using AWS CLI to update the ECS task definition with the new image tag
-#          aws ecs register-task-definition --family dropbox_nginx  --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest", "memory":128, "portMappings":[{"hostPort": 80, "protocol": "tcp", "containerPort":80}] }]' --region ap-south-1
-#          aws ecs register-task-definition --family dropbox_ui  --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest", "memory":128, "portMappings":[{"hostPort": 3000, "protocol": "tcp", "containerPort":3000}] }]' --region ap-south-1
-#          aws ecs register-task-definition --family dropbox_core  --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
-#          aws ecs register-task-definition --family dropbox_file_server  --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
+
+      - name: Update ECS Task Definition
+        run: |
+          # Using AWS CLI to update the ECS task definition with the new image tag
+          aws ecs register-task-definition --family dropbox_nginx  --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest", "memory":128, "portMappings":[{"hostPort": 80, "protocol": "tcp", "containerPort":80}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropbox_ui  --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest", "memory":128, "portMappings":[{"hostPort": 3000, "protocol": "tcp", "containerPort":3000}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropbox_core  --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropbox_file_server  --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
 
       - name: Stop ECS Task
         run: |
