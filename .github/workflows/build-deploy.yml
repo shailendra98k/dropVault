@@ -47,6 +47,14 @@ jobs:
           aws ecs register-task-definition --family dropbox_core  --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
           aws ecs register-task-definition --family dropbox_file_server  --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
 
+      - name: Stop ECS Task
+        run: |
+          # Using AWS CLI to run the ECS task using the updated task definition
+          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_nginx
+          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_ui
+          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_core
+          aws ecs stop-task --cluster fakeDropbox --task-definition dropbox_file_server    
+
       - name: Run ECS Task
         run: |
           # Using AWS CLI to run the ECS task using the updated task definition
