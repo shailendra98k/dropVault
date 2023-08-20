@@ -49,16 +49,16 @@ jobs:
 
       - name: Stop ECS Task
         run: |
-          aws ecs list-tasks --cluster fakeDropbox --query 'taskArns --output text' | 
-          aws ecs run-stop --task TASKS[0]
-          aws ecs run-stop --task TASKS[1]
-          aws ecs run-stop --task TASKS[2]
-          aws ecs run-stop --task TASKS[3]
+          aws ecs list-tasks --cluster fakeDropbox --query 'taskArns'
+#          aws ecs run-stop --task TASKS[0]
+#          aws ecs run-stop --task TASKS[1]
+#          aws ecs run-stop --task TASKS[2]
+#          aws ecs run-stop --task TASKS[3]
 
-      - name: Run ECS Task
-        run: |
-          # Using AWS CLI to run the ECS task using the updated task definition
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_nginx
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_ui
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_core
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_file_server
+#      - name: Run ECS Task
+#        run: |
+#          # Using AWS CLI to run the ECS task using the updated task definition
+#          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_nginx
+#          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_ui
+#          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_core
+#          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_file_server
