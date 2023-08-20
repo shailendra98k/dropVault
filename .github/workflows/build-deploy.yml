@@ -30,12 +30,6 @@ jobs:
           docker push shailendra98k/fakedropbox_file_server:latest
           docker push shailendra98k/fakedropbox_ui:latest
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-
       - name: Update ECS Task Definition
         run: |
           # Using AWS CLI to update the ECS task definition with the new image tag
