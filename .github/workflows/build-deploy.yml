@@ -50,8 +50,8 @@ jobs:
       - name: Stop ECS Task
         run: |
           TASK=`aws ecs list-tasks --cluster fakeDropbox --query 'taskArns'`
-          aws ecs run-stop --task TASKS[0]
-          aws ecs run-stop --task TASKS[1]
+          aws ecs run-stop --task $TASKS[0]
+          aws ecs run-stop --task $TASKS[1]
 
 
 #      - name: Run ECS Task
