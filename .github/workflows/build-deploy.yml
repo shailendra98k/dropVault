@@ -49,10 +49,11 @@ jobs:
 
       - name: Stop ECS Task
         run: |
-          $TASKS = aws ecs list-tasks --cluster fakeDropbox
-          foreach ($TASK in $TASKS){
-            aws ecs stop-task --cluster fakeDropbox --task $TASK
-          }
+          TASKS=`aws ecs list-tasks --cluster fakeDropbox --query 'taskArns'`
+          aws ecs run-stop --task TASKS[0]
+          aws ecs run-stop --task TASKS[1]
+          aws ecs run-stop --task TASKS[2]
+          aws ecs run-stop --task TASKS[3]
 
       - name: Run ECS Task
         run: |
