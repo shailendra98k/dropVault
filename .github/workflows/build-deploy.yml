@@ -33,10 +33,10 @@ jobs:
       - name: Update ECS Task Definition
         run: |
           # Using AWS CLI to update the ECS task definition with the new image tag
-          aws ecs update-task-definition --task-definition dropbox_nginx --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest"}]'
-          aws ecs update-task-definition --task-definition dropbox_ui --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest"}]'
-          aws ecs update-task-definition --task-definition dropbox_core --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest"}]'
-          aws ecs update-task-definition --task-definition dropbox_file_server --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest"}]'
+          aws ecs register-task-definition --task-definition dropbox_nginx --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest"}]'
+          aws ecs register-task-definition --task-definition dropbox_ui --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest"}]'
+          aws ecs register-task-definition --task-definition dropbox_core --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest"}]'
+          aws ecs register-task-definition --task-definition dropbox_file_server --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest"}]'
 
       - name: Run ECS Task
         run: |
