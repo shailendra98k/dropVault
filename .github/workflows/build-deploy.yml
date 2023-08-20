@@ -53,7 +53,7 @@ jobs:
 
           # Iterate through the task ARNs and stop each task
           for arn in $task_arns; do
-            aws ecs stop-task --cluster "fakeDropbox" --task "$arn"
+            echo $arn
           done
 
 
