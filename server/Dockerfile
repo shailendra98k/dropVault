@@ -12,6 +12,7 @@ RUN npm run build
 FROM node:14-slim
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.env ./.env
 
 EXPOSE 8000
 
