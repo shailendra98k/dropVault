@@ -26,13 +26,13 @@ jobs:
           echo MYSQL_DB_PASSWORD=${{ secrets.MYSQL_DB_PASSWORD}} >> .env
           echo ZOHO_USER=${{ secrets.ZOHO_USER}} >> .env
           echo ZOHO_USER_PASSWORD=${{ secrets.ZOHO_USER_PASSWORD}} >> .env
-          cat /server/.env
+          cat ./server/.env
           
           touch ./file-server/.env
           echo DB=${{ secrets.DB}} >> .env
           echo DB_USER=${{ secrets.DB_USER}} >> .env
           echo MYSQL_DB_USER=${{ secrets.DB_PASSWORD}} >> .env
-          cat /file-server/.env
+          cat ./file-server/.env
 
       - name: Build Docker Image
         run: |
