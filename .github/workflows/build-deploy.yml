@@ -19,7 +19,7 @@ jobs:
 
       - name: Create ENV file
         run: |
-          cd server
+          cd server && touch .env
           echo MONGO_CONN_URL="${{ secrets.MONGO_CONN_URL}}" >> .env
           echo MYSQL_DB_URL="${{ secrets.MYSQL_DB_URL}}" >> .env
           echo MYSQL_DB_USER="${{ secrets.MYSQL_DB_USER}}" >> .env
@@ -27,7 +27,7 @@ jobs:
           echo ZOHO_USER="${{ secrets.ZOHO_USER}}" >> .env
           echo ZOHO_USER_PASSWORD="${{ secrets.ZOHO_USER_PASSWORD}}" >> .env
           
-          cd ../file-server
+          cd ../file-server && touch .env
           echo DB="${{ secrets.DB}}" >> .env
           echo DB_USER="${{ secrets.DB_USER}}" >> .env
           echo DB_PASSWORD="${{ secrets.DB_PASSWORD}}" >> .env

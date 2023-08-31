@@ -4,7 +4,7 @@ function NewFolder() {
   // eslint-disable-next-line no-unused-vars
   const onClickHandler = () => {
     const dir = __dirname + "server/upload/vid.mkv";
-    fetch(`http://localhost/download${dir}`)
+    fetch(`${BASE_URI}/download${dir}`)
       .then((resp) => resp.blob())
       .then((blob) => {
         console.log(blob);

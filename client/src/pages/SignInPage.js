@@ -13,7 +13,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "axios";
-import { BASE_URI } from "../constants";
+import { API_URI } from "../constants";
 import { useHistory } from "react-router-dom";
 const theme = createTheme();
 
@@ -29,7 +29,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios
-      .post(BASE_URI + "/sign-in/", {
+      .post(API_URI + "/sign-in/", {
         email: data.get("email"),
         password: data.get("password"),
       })

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AppContext } from "../../App";
 import axios from "axios";
-import { BASE_URI } from "../../constants";
+import { API_URI } from "../../constants";
 import { SIDE_NAV_ID } from "../../classNameConstant";
 import { Box } from "@mui/material";
 import List from "@mui/material/List";
@@ -36,7 +36,7 @@ export const ActionList = (props) => {
     formData.append("current_dir", currDir);
     formData.append("user_id", user.id);
 
-    axios.post(BASE_URI + "/addNewFolder", formData).then((res) => {
+    axios.post(API_URI + "/addNewFolder", formData).then((res) => {
       console.log("Res is: ", res);
     });
   };

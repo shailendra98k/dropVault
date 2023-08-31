@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import { AppContext } from "../App";
-import { BASE_URI } from "../constants";
+import { API_URI } from "../constants";
 import axios from "axios";
 import FolderCard from "../components/card/FolderCard";
 import FileCard from "../components/card/FileCard";
@@ -32,7 +32,7 @@ const Body = () => {
     const formData = new FormData();
     formData.append("current_dir", currDir);
     formData.append("user_id", user.id);
-    axios.post(BASE_URI, formData).then((res) => {
+    axios.post(API_URI, formData).then((res) => {
       console.log("Daat received:", res);
       setDirectories(res.data.sub_dirs);
       setFiles(res.data.files);

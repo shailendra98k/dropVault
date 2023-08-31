@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import { BASE_URI } from "../constants";
+import { API_URI } from "../constants";
 import { useHistory } from "react-router-dom";
 const theme = createTheme();
 
@@ -28,7 +28,7 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios
-      .post(BASE_URI + "/sign-up/", {
+      .post(API_URI + "/sign-up/", {
         first_name: data.get("first_name"),
         last_name: data.get("last_name"),
         email: data.get("email"),

@@ -1,7 +1,7 @@
 import * as React from "react";
 import axios from "axios";
 import { Breadcrumbs } from "@mui/material";
-import { BASE_URI } from "../../constants";
+import { API_URI } from "../../constants";
 import { Button } from "@mui/material";
 import { AppContext } from "../../App";
 
@@ -19,7 +19,7 @@ export const DirBreadcrumbs = () => {
     const formData = new FormData();
     formData.append("current_dir", path_uri);
     formData.append("user_id", user.id);
-    axios.post(BASE_URI, formData).then((res) => {
+    axios.post(API_URI, formData).then((res) => {
       setDirectories(res.data.sub_dirs);
       setFiles(res.data.files);
       setCurrDir(path_uri);

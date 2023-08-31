@@ -3,7 +3,7 @@ import { AppContext } from "../../App";
 import { makeStyles } from "@material-ui/core/styles";
 import { CardContent } from "@mui/material";
 import { Box, Card } from "@material-ui/core";
-import { BASE_URI } from "../../constants";
+import { API_URI } from "../../constants";
 import axios from "axios";
 import { FOLDER_CARD_CN } from "../../classNameConstant";
 
@@ -37,7 +37,7 @@ export default function FolderCard({ data, userid }) {
       currDir === "/" ? currDir + name : currDir + "/" + name
     );
     formData.append("user_id", userid);
-    axios.post(BASE_URI, formData).then((res) => {
+    axios.post(API_URI, formData).then((res) => {
       console.log("Response is: ", res);
       setDirectories(res.data.sub_dirs);
       setFiles(res.data.files);

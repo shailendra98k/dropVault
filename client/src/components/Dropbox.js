@@ -3,7 +3,7 @@ import * as React from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { AppContext } from "../App";
-import { BASE_URI } from "../constants";
+import { API_URI, BASE_URI } from "../constants";
 import "./css/Dropbox.css";
 import { useUploadModalContext } from "../context/UploadModalContext";
 function Dropbox(props) {
@@ -46,7 +46,7 @@ function Dropbox(props) {
     formData.append("type", 0);
 
     axios
-      .post("http://localhost/document-add/", formData, {
+      .post(`${BASE_URI}/document-add/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress(e) {
           console.log("Loaded :", e.loaded);
@@ -65,7 +65,7 @@ function Dropbox(props) {
         };
 
         axios
-          .post(`${BASE_URI}/upload`, data)
+          .post(`${API_URI}/upload`, data)
           .then((res) => {
             console.log(
               "response aftre document upload from express server :",
