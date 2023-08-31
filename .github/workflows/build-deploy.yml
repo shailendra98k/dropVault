@@ -19,20 +19,20 @@ jobs:
 
       - name: Create ENV file
         run: |
-          touch ./server/.env
+          cd server
           echo MONGO_CONN_URL=${{ secrets.MONGO_CONN_URL}} >> .env
           echo MYSQL_DB_URL=${{ secrets.MYSQL_DB_URL}} >> .env
           echo MYSQL_DB_USER=${{ secrets.MYSQL_DB_USER}} >> .env
           echo MYSQL_DB_PASSWORD=${{ secrets.MYSQL_DB_PASSWORD}} >> .env
           echo ZOHO_USER=${{ secrets.ZOHO_USER}} >> .env
           echo ZOHO_USER_PASSWORD=${{ secrets.ZOHO_USER_PASSWORD}} >> .env
-          cat ./server/.env
           
-          touch ./file-server/.env
+          cd ../file-server
           echo DB=${{ secrets.DB}} >> .env
           echo DB_USER=${{ secrets.DB_USER}} >> .env
           echo MYSQL_DB_USER=${{ secrets.DB_PASSWORD}} >> .env
-          cat ./file-server/.env
+          
+          cd ..
 
       - name: Build Docker Image
         run: |
