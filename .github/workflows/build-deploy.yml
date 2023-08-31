@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Get Workdir
+        run: |
+          pwd
+          ls
 
       - name: Create ENV file
         run: |
