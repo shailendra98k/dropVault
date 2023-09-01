@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CardContent } from "@mui/material";
 import { Box, Card } from "@material-ui/core";
 import { FILE_CARD_CN } from "../../classNameConstant";
+import { BASE_URI } from "../../constants";
 
 const useStyles = makeStyles({
   root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
 export default function FileCard({ data }) {
   const classes = useStyles();
   const onClickHandler = () => {
-    window.open("http://localhost/media/" + data.id, "_blank");
+    window.open(`${BASE_URI}/media/${data.id}`, "_blank");
   };
 
   return (
