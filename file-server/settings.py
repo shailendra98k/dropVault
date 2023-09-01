@@ -133,3 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/file-server/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'file-server/media')
 LOGOUT_REDIRECT_URL = '/'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
