@@ -8,15 +8,15 @@ const bodyParser=require('body-parser')
 const download = require('download')
 require('./config/mongoose')
 require('./config/mysql')
+require('./config/nodeMailer')
 const app = express();
 const PORT = 8000;
 const Directory = require('./Model/Directory');
 const File = require('./Model/File')
 const User = require('./Model/User')
 const { createDecipher } = require('crypto');
-const s3=require( './S3/s3')
-const {STORAGE_DIR_PATH} = require('./config/storage')
-const axios = require('axios')
+const { v4: uuid } = require('uuid');
+const mailer = require('./config/nodeMailer');
 app.use(fileUpload())
  
 var corsOptions = {
@@ -73,71 +73,49 @@ app.post('/api/v1/addNewFolder',(req,res)=>{
 })
 
 
-app.post('/api/v1/upload', function(req,res){ 
+app.post("/api/v1/upload", async (req, res) => {
+  console.log("Req is: ", req.body);
 
-   console.log("Req is: ", req.body);
+  //   var bodyFormData = new FormData();
+  //   bodyFormData.append('file', "Hi")
+  //   bodyFormData.append('filename', 'abcccdd.txt');
+  //   bodyFormData.append('description',"aded from React Dropbox" );
+  //
+  //   axios.post("http://127.0.0.1:8001/document-add/",data, headers).then((res)=>{
+  //        console.log("Resonse from file server: ", res.data)
+  //   }).catch((err)=>{
+  //        console.log("Error from file server: ",err)
+  //   })
+  //
+  //   console.log("Req body : ", req.body)
+  //   console.log("Req fils : ", req.files)
 
+  const dir_path =
+    req.body.current_dir == "/"
+      ? `/${req.body.user_id}`
+      : `/${req.body.user_id}${req.body.current_dir}`;
 
-//   var bodyFormData = new FormData();
-//   bodyFormData.append('file', "Hi")
-//   bodyFormData.append('filename', 'abcccdd.txt');
-//   bodyFormData.append('description',"aded from React Dropbox" );
-//
-//   axios.post("http://127.0.0.1:8001/document-add/",data, headers).then((res)=>{
-//        console.log("Resonse from file server: ", res.data)
-//   }).catch((err)=>{
-//        console.log("Error from file server: ",err)
-//   })
-//
-//   console.log("Req body : ", req.body)
-//   console.log("Req fils : ", req.files)
-   
-   
-   const dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
-   
-   Directory.findOne({dir_path:dir_path}).then( async (dir)=>{
+  const dir = await Directory.findOne({ dir_path: dir_path });
 
-      console.log(`upload${req.body.current_dir}`);
-      console.log("Dir receive drom databse is, ", dir)
-      console.log("Request body is: ",req.body)
+  console.log(`upload${req.body.current_dir}`);
+  console.log("Dir receive drom databse is, ", dir);
+  console.log("Request body is: ", req.body);
 
+  var metadata = {};
+  metadata["filename"] = req.body.name;
+  metadata["size"] = req.body.size;
+  metadata["type"] = req.body.type;
+  metadata["id"] = req.body.id;
 
-      var metadata={};
-     metadata["filename"]=req.body.name;
-     metadata["size"]=req.body.size;
-     metadata["type"]=req.body.type;
-     metadata["id"]=req.body.id;
+  console.log("Creating File onject");
+  const file = await File.create(metadata);
+  console.log("created file onject", file);
+  dir.files.push(file._id);
 
-      const file = await File.create(metadata);
-      dir.files.push(file._id);
-      dir.save();
-//      for( var i=0;i<uploaded_files.length;i++){
-//
-//         var metadata={};
-//         metadata["filename"]=uploaded_files[i].name;
-//         metadata["type"]=uploaded_files[i].mimetype;
-//         metadata["size"]=uploaded_files[i].size;
-//
-//         const file = await File.create(metadata);
-//         console.log("File cretaed", file)
-//         dir.files.push(file.id);
-//
-//         let file_path=`${__dirname}/../storage${dir_path}/`+uploaded_files[i].name;
-//
-//         console.log("file path is: ", file_path)
-//         fs.writeFile(file_path, uploaded_files[i].data, (err) => {
-//            if (err) {
-//               res.send("Error");
-//            }
-//            else {
-//               console.log("uploaded successfully...");
-//            }
-//         });
-//      }
-   })
-   res.status(200)
-   
-})
+  dir.save();
+  console.log("File pushed in dir and saved", dir);
+  return res.status(200).send('File is associated with the user');
+});
 
 
 
@@ -152,35 +130,53 @@ app.post('/api/v1/sign-up/', async (req, res) => {
     * 2. A directory to be creteas specificly for that user in the storage
     * 3. Now that directory is created, we need to store the new directory info in MongoDB
     */
-   const user = await User.findAll({
+   const user = await User.findOne({
       where: {
          email: req.body.email
       }
    })
-   if(user.length){
-      res.status(403).send("User with email already exists!!!")
+   console.log('User is: ', user);
+   if(user && user.verfied){
+      return res.status(403).send("User with email already exists!!!")
    }
+   if(user && !user.verfied){
+      const mailOptions = {
+          from: 'shailendra.kumar@fakedropbox.fun',
+          to: req.body.email,
+          subject: 'Verfication link',
+          text: 'Please verify ur account by clicking on this link!'
+      };
+
+      mailer.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log('Error:', error);
+        } else {
+            console.log('Email sent:', info.response);
+        }
+      });
+      return res.status(403).send("Verification mail sent to email again")
+   }
+
    //create a new user
    try{
       const new_user = await User.create({
          email:req.body.email,
          password:req.body.password,
          first_name:req.body.first_name,
-         last_name:req.body.last_name
+         last_name:req.body.last_name,
+         identifier: uuid()
       })
-   
-      fs.mkdir(`../storage/${new_user.id}/`, function(err) {
-         if(err){
-            console.log(err);
-         }else{
-            console.log("Dir created for the new user")
-         }
-      });
-      Directory.create({
+      await Directory.create({
          name:new_user.id,
          dir_path:`/${new_user.id}`
       });
-      res.status(201).send("User created successfully!!!");
+      const info = await mailer.sendMail({
+         from: 'shailendra.kumar@fakedropbox.fun', // Sender's email address
+         to:req.body.email, // Recipient's email address
+         subject: "Verfication link", // Subject of the email
+         text: "Please verify ur account by clicking on this link", // Email content in plain text
+       })
+      res.status(201).send("Verification mail sent to email");
    }
    catch(e){
       res.status(500).send("Internal Server Error");
@@ -189,28 +185,50 @@ app.post('/api/v1/sign-up/', async (req, res) => {
    
 })
 app.post('/api/v1/sign-in/', async (req,res)=>{
-   const user = await User.findAll({
+   const user = await User.findOne({
       where: {
          email: req.body.email,
          password: req.body.password
       }
    })
-   if(!user.length){
-      res.status(403).send("Incorrect credentials!!!")
+   if(!user){
+      return res.status(403).send("Incorrect credentials!!!")
    }
-   res.status(200).json({
-      id: user[0].id,
-      email:user[0].email,
-      first_name: user[0].first_name,
-      last_name:user[0].last_name
+   if(!user.verified){
+      return res.status(403).send("Please verify this account vis link sent on email!!!")
+   }
+
+   //TODO: Return bearerToken in the cookie response header
+   //TODO: bearerToken mechanism should be implemented first
+
+   return res.status(200).json({
+      id: user.id,
+      email:user.email,
+      first_name: user.first_name,
+      last_name:user.last_name
    });
 })
 
-// app.post('/api/v1/',(req,res)=>{
-//    console.log(req.body)
-//    File.create(req.body)
-//    res.send("Done")
-// })
+
+app.get('/api/v1/account-verify/:id', async (req,res)=>{
+
+    const user = await User.findOne({
+      where: {
+         identifier: req.params.id
+      }
+   })
+   if(!user){
+      return res.status(400).send('Bad Request');
+   }
+   await user.update({
+      verified: true
+   })
+
+   return res.status(200).json({
+     verfied:true
+   });
+})
+
 app.post('/api/v1/',(req,res)=>{
    
    let dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
@@ -229,40 +247,6 @@ app.post('/api/v1/',(req,res)=>{
       return res.send(data)
    })
    
-})
-
-app.post('/api/v1/upload/',(req,res)=>{
-
-   
-   const files = []
-   if(req.files.file.length){
-      files.push(...req.files.file)
-   } else {
-      files.push(req.files.file)
-   }
-
-   function writeFile(name,extn,data,increment=0){
-      const file_path= increment ?(name+'('+increment+').'+extn):(name+'.'+extn)
-      fs.writeFile(file_path,data, { flag: 'wx' }, (err) => {
-         if (err) {
-            if (err.code === "EEXIST"){
-               writeFile(name,extn,data,increment+1)
-            }
-         }
-         else {
-            console.log(`${name} saved...`); 
-         }
-      });
-   }
-   
-   files.map((file)=>{
-      let file_name = file.name.split('.').slice(0,-1).toString().replaceAll(',','.');
-      let file_ext = file.name.split('.').slice(-1).toString()
-      writeFile("../storage/23/"+file_name,file_ext,file.data)
-   } )
-
-   res.send("Received and saved successfully...")
-
 })
 
 app.listen(PORT, function() {

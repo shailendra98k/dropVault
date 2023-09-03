@@ -3,4 +3,6 @@
 /client/.eslintcache
 /file-server/.venv
 /.idea
-/file-server/tfs/media
+/file-server/media
+/server/.env
+/file-server/.env

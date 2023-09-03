@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize('dropbox', 'root', '', {
-    host: '127.0.0.1',
+const sequelize = new Sequelize('dropbox', process.env.MYSQL_DB_USER, process.env.MYSQL_DB_PASSWORD, {
+    host: process.env.MYSQL_DB_URL,
     dialect: 'mysql'
 });
 const User = sequelize.define('user', {
@@ -8,6 +8,10 @@ const User = sequelize.define('user', {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
+    },
+    identifier: {
+        type: DataTypes.UUID,
+        allowNull: true
     },
     email: {
         type: DataTypes.STRING,
@@ -24,6 +28,10 @@ const User = sequelize.define('user', {
     },
     last_name: {
         type: DataTypes.STRING,
+        allowNull: true
+    },
+    verified :{
+        type: DataTypes.BOOLEAN,
         allowNull: true
     }
 });
