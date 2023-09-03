@@ -6,7 +6,8 @@ import { AppContext } from "../App";
 import { API_URI, BASE_URI } from "../constants";
 import "./css/Dropbox.css";
 import { useUploadModalContext } from "../context/UploadModalContext";
-function Dropbox(props) {
+import { TSFixMe } from "../../types";
+function Dropbox() {
   const { currDir, user } = React.useContext(AppContext);
   const [display, setDisplay] = React.useState("none");
   const { isUploadModalOpen, setIsUploadModalOpen } = useUploadModalContext();
@@ -20,11 +21,11 @@ function Dropbox(props) {
   var totalData = 0;
   var dataSent = 0;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function setTotalData(val) {
+  function setTotalData(val: number) {
     totalData = val;
   }
 
-  function fun(file, flag) {
+  function fun(file : TSFixMe, flag: boolean) {
     var newlyAddedFilesList = [];
 
     const formData = new FormData();
@@ -43,6 +44,7 @@ function Dropbox(props) {
     formData.append("current_dir", currDir);
     formData.append("name", file.name);
     formData.append("size", file.size);
+    // @ts-ignore
     formData.append("type", 0);
 
     axios
@@ -50,6 +52,7 @@ function Dropbox(props) {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress(e) {
           console.log("Loaded :", e.loaded);
+          // @ts-ignore
           document.getElementById(metadata.name).value = e.loaded / e.total;
         },
       })
@@ -99,6 +102,7 @@ function Dropbox(props) {
   }, []);
 
   const UploadHandler = function () {
+    // @ts-ignore
     const files = document.getElementById("fileElem").files;
     UploadFiles(files);
   };
@@ -109,6 +113,7 @@ function Dropbox(props) {
       const files =
         param.type !== "change"
           ? param
+          // @ts-ignore
           : document.getElementById("fileElem").files;
 
       [...files].forEach((file) => {
@@ -126,10 +131,12 @@ function Dropbox(props) {
 
         divEle.appendChild(pEle);
         divEle.appendChild(proEle);
+        // @ts-ignore
         document.getElementById("preview").appendChild(divEle);
       });
-
+      // @ts-ignore
       if (document.getElementById("fileElem").files.length)
+        // @ts-ignore
         document.getElementById("submitBtn").classList.remove("disabled");
     },
     [setTotalData, totalData]
@@ -137,37 +144,37 @@ function Dropbox(props) {
 
   useEffect(() => {
     const dropArea = document.getElementById("drop-area");
-    const preventDefaults = function (e) {
+    const preventDefaults = function (e: Event) {
       e.preventDefault();
       e.stopPropagation();
     };
 
-    const unhighlight = function (e) {
-      dropArea.classList.remove("highlight");
+    const unhighlight = function (e: Event) {
+      dropArea?.classList.remove("highlight");
     };
 
-    const highlight = function (e) {
-      dropArea.classList.add("highlight");
+    const highlight = function (e: Event) {
+      dropArea?.classList.add("highlight");
     };
 
-    const handleDrop = function (e) {
+    const handleDrop = function (e: DragEvent) {
       let data = e.dataTransfer;
-      let files = data.files;
+      let files = data?.files;
       previewHandler(files);
       UploadFiles(files);
     };
 
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, preventDefaults, false);
+      dropArea?.addEventListener(eventName, preventDefaults, false);
     });
 
     ["dragleave", "drop"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, unhighlight, false);
+      dropArea?.addEventListener(eventName, unhighlight, false);
     });
     ["dragenter", "dragover"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, highlight, false);
+      dropArea?.addEventListener(eventName, highlight, false);
     });
-    dropArea.addEventListener("drop", handleDrop, false);
+    dropArea?.addEventListener("drop", handleDrop, false);
   }, [UploadFiles, previewHandler]);
 
   return (
@@ -181,14 +188,14 @@ function Dropbox(props) {
         X
       </a>
       <div id="drop-area">
-        <form class="my-form">
+        <form className="my-form">
           <p>
             Upload multiple files with the file dialog or by dragging and
             dropping images onto the dashed region
           </p>
           <input type="file" id="fileElem" multiple onChange={previewHandler} />
 
-          <label className="button" for="fileElem">
+          <label className="button" htmlFor="fileElem">
             Select some files
           </label>
 
