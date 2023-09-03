@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { AppContext } from "../App";
 import { API_URI, SESSION_ITEMS, URL_PATHS } from "../constants";
@@ -12,37 +12,33 @@ import { TSFixMe } from "../../types";
 
 const Home = () => {
   const history = useHistory();
-  React.useEffect(() => {
-    if (!sessionStorage.getItem("user")) {
-      history.push("/sign-in");
+  const { currDir, user, setFiles, setDirectories } = useContext(AppContext);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem(SESSION_ITEMS.USER)) {
+      history.push(URL_PATHS.SIGN_IN);
+    } else {
+      const formData = new FormData();
+      formData.append("current_dir", currDir);
+      formData.append("user_id", user?.id);
+      axios.post(API_URI, formData).then((res) => {
+        setDirectories(res.data.sub_dirs);
+        setFiles(res.data.files);
+      });
     }
-  }, [history]);
+  });
+
   return (
     <Box id={"home-container"} sx={{ display: "flex" }}>
-      <ActionBar/>
+      <ActionBar />
       <Body />
-      <Dropbox/>
+      <Dropbox />
     </Box>
   );
 };
 
 const Body = () => {
-  const { currDir, files, user, setFiles, directories, setDirectories } =
-    React.useContext(AppContext);
-  React.useEffect(() => {
-    const formData = new FormData();
-    formData.append("current_dir", currDir);
-    formData.append("user_id", user.id);
-    axios.post(API_URI, formData).then((res) => {
-      console.log("Daat received:", res);
-      setDirectories(res.data.sub_dirs);
-      setFiles(res.data.files);
-    });
-  }, [currDir, setDirectories, setFiles, user.id]);
-  React.useEffect(() => {
-    console.log("Curr Dir is:", currDir);
-    console.log("User is:", user);
-  });
+  const { files, user, directories } = useContext(AppContext);
 
   return (
     <Box style={{ flexGrow: 4, height: "90vh", overflow: "scroll" }}>
