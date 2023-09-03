@@ -15,6 +15,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "axios";
 import { API_URI } from "../constants";
 import { useHistory } from "react-router-dom";
+import { TSFixMe } from "../../types";
 const theme = createTheme();
 
 export default function SignIn() {
@@ -25,7 +26,7 @@ export default function SignIn() {
     }
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: TSFixMe) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios

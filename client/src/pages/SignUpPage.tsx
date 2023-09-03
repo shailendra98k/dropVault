@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { API_URI } from "../constants";
 import { useHistory } from "react-router-dom";
+import { TSFixMe } from "../../types";
 const theme = createTheme();
 
 export default function SignUp() {
@@ -24,7 +25,7 @@ export default function SignUp() {
       history.push("/");
     }
   });
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: TSFixMe) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     axios

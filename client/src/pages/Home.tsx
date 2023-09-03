@@ -8,6 +8,7 @@ import FileCard from "../components/card/FileCard";
 import { useHistory } from "react-router-dom";
 import Dropbox from "../components/Dropbox";
 import { ActionBar } from "../components/actionBar/ActionBar";
+import { TSFixMe } from "../../types";
 
 const Home = () => {
   const history = useHistory();
@@ -46,13 +47,13 @@ const Body = () => {
   return (
     <Box style={{ flexGrow: 4, height: "90vh", overflow: "scroll" }}>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {directories.map((dir) => {
+        {directories.map((dir: TSFixMe) => {
           return <FolderCard data={dir} userid={user.id} />;
         })}
       </Box>
 
       <Box sx={{ display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
-        {files.map((file) => {
+        {files.map((file: TSFixMe) => {
           return <FileCard data={file} />;
         })}
       </Box>
