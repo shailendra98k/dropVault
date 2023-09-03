@@ -5,7 +5,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/Inbox";
-export const ActionItem = (props) => {
+import { TSFixMe } from "../../../types";
+export const ActionItem = (props : TSFixMe) => {
   return (
     <ListItem onClick={props.action} id={props.id} disablePadding sx={{ marginBottom: "5px", display: props.hide?'none':'initial' }}>
       <ListItemButton>

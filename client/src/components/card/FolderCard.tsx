@@ -24,13 +24,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FolderCard({ data, userid }) {
+export default function FolderCard({ data, userid }: { data: {name: string}; userid: string }) {
   console.log("data is:", data);
   const classes = useStyles();
   const { currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList } =
     React.useContext(AppContext);
 
-  const getIntoFolderHandler = (currDir, name) => {
+  const getIntoFolderHandler = (currDir: string, name: string) => {
     const formData = new FormData();
     formData.append(
       "current_dir",
@@ -50,7 +50,7 @@ export default function FolderCard({ data, userid }) {
   };
 
   return (
-    <Box className={FOLDER_CARD_CN} sx={{ margin: "6px", cursor: "pointer" }}>
+    <Box className={FOLDER_CARD_CN} sx={{ margin: "6px" }}>
       <Card
         onClick={() => getIntoFolderHandler(currDir, data.name)}
         className={classes.root}
@@ -59,7 +59,7 @@ export default function FolderCard({ data, userid }) {
           <div>
             <i
               style={{ fontSize: "32px", color: "grey" }}
-              class="fa fa-folder"
+              className="fa fa-folder"
             ></i>
           </div>
           <br></br>

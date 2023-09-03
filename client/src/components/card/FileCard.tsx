@@ -22,20 +22,20 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FileCard({ data }) {
+export default function FileCard({ data }: { data: { id: string, filename: string} }) {
   const classes = useStyles();
   const onClickHandler = () => {
     window.open(`${BASE_URI}/media/${data.id}`, "_blank");
   };
 
   return (
-    <Box className={FILE_CARD_CN} sx={{ margin: "6px", cursor: "pointer" }}>
+    <Box className={FILE_CARD_CN} sx={{ margin: "6px"}}>
       <Card className={classes.root} onClick={() => onClickHandler()}>
         <CardContent>
           <div>
             <i
               style={{ fontSize: "32px", color: "grey" }}
-              class="fa fa-file-pdf-o"
+              className="fa fa-file-pdf-o"
             ></i>
           </div>
           <br></br>

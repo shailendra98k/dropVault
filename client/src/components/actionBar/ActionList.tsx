@@ -2,7 +2,6 @@ import * as React from "react";
 import { AppContext } from "../../App";
 import axios from "axios";
 import { API_URI } from "../../constants";
-import { SIDE_NAV_ID } from "../../classNameConstant";
 import { Box } from "@mui/material";
 import List from "@mui/material/List";
 import { Divider } from "@mui/material";
@@ -10,8 +9,9 @@ import { ActionItem } from "../actionItem/ActionItem";
 import { useDeviceContext } from "../../context/DeviceContext";
 import { useActionListContext } from "../../context/ActionListContext";
 import { useUploadModalContext } from "../../context/UploadModalContext";
+import { TSFixMe } from "../../../types";
 
-export const ActionList = (props) => {
+export const ActionList = (props: TSFixMe) => {
   const { currDir, user } = React.useContext(AppContext);
   const { setIsActionListOpen } = useActionListContext();
   const { setIsUploadModalOpen } = useUploadModalContext();

@@ -15,7 +15,7 @@ export const DirBreadcrumbs = () => {
     setDirectories,
   } = React.useContext(AppContext);
   var prefix = "";
-  const changeDirectory = (path_uri) => {
+  const changeDirectory = (path_uri: string) => {
     const formData = new FormData();
     formData.append("current_dir", path_uri);
     formData.append("user_id", user.id);
@@ -38,8 +38,8 @@ export const DirBreadcrumbs = () => {
         paddingTop: "0px",
       }}
     >
-      {breadcrumbsList.map((item, index) => {
-        let path_uri;
+      {breadcrumbsList.map((item: string, index : number) => {
+        let path_uri : string;
         if (index === 0) {
           path_uri = "/";
         } else if (index === 1) {

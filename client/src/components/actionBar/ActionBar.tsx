@@ -3,9 +3,11 @@ import { ActionList } from "./ActionList";
 import { Drawer } from "@mui/material";
 import { useDeviceContext } from "../../context/DeviceContext";
 import {useActionListContext} from "../../context/ActionListContext";
+import { TSFixMe } from "../../../types";
 
 
-export const ActionBar = (props) => {
+
+export const ActionBar = (props : TSFixMe ) => {
   const { isS } = useDeviceContext();
   const {isActionListOpen} = useActionListContext();
   
