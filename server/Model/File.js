@@ -20,3 +20,5 @@ const File = new Schema ({
     }
 },{timestamps:true})
 module.exports=mongoose.model('File', File);
+
+ 
