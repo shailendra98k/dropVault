@@ -6,8 +6,8 @@ const emailConfig = {
     port: 587,
     secure: false,
     auth: {
-        user: process.env.ZOHO_USER,
-        pass: process.env.ZOHO_USER_PASSWORD
+        user: 'shailendra.kumar@fakedropbox.fun',
+        pass: 's3srz_nR'
     }
 };
 const mailer = nodemailer.createTransport(emailConfig);
