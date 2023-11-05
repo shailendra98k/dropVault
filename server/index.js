@@ -73,7 +73,7 @@ app.post('/api/v1/addNewFolder',(req,res)=>{
 })
 
 
-app.post("/api/v1/upload", async (req, res) => {
+app.post("/api/v1/add-document", async (req, res) => {
   console.log("Req is: ", req.body);
 
   //   var bodyFormData = new FormData();
