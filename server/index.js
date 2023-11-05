@@ -232,8 +232,7 @@ app.get('/api/v1/account-verify/:id', async (req,res)=>{
 app.post('/api/v1/',(req,res)=>{
    
    let dir_path = req.body.current_dir=='/'?`/${req.body.user_id}`:`/${req.body.user_id}${req.body.current_dir}`
-   console.log("dir path is: ", dir_path)
-   Directory.findOne({dir_path:dir_path}).populate({path:'files'}).populate({path:'sub_dirs'}).then((dir)=>{
+   Directory.findOne({dir_path:dir_path}).populate({path:'files', options: { sort: { 'updatedAt': -1 } }}).populate({path:'sub_dirs'}).then((dir)=>{
       console.log("Dir and data is:", dir)
       if (!dir) return res.send({
          sub_dirs:[],
