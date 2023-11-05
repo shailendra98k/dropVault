@@ -7,7 +7,7 @@ require('dotenv').config()
 const bodyParser=require('body-parser')
 const download = require('download')
 require('./config/mongoose')
-require('./config/mysql')
+require('./config/sequelize')
 require('./config/nodeMailer')
 const app = express();
 const PORT = 8000;
