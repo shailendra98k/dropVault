@@ -26,7 +26,7 @@ const Home = () => {
         setFiles(res.data.files);
       });
     }
-  },[currDir, history, setDirectories, setFiles, user?.id]);
+  },[currDir, history, setDirectories, setFiles, user?.id, files]);
 
   return (
     <Box id={"home-container"} sx={{ display: "flex" }}>
