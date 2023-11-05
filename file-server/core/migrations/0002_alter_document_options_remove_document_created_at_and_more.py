@@ -35,7 +35,11 @@ class Migration(migrations.Migration):
             model_name='document',
             name='title',
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='document',
+            name='id',
+        ),
+        migrations.AddField(
             model_name='document',
             name='id',
             field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
