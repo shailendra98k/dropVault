@@ -1,35 +1,53 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
 import axios from "axios";
-import { useEffect } from "react";
-import { AppContext } from "../App";
 import { API_URI, BASE_URI } from "../constants";
-import "./css/Dropbox.css";
 import { useUploadModalContext } from "../context/UploadModalContext";
 import { TSFixMe } from "../../types";
-function Dropbox() {
-  const { currDir, user } = React.useContext(AppContext);
-  const [display, setDisplay] = React.useState("none");
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useDefaultContext } from "../context/DefaultContext";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "80%",
+  maxWidth: 600,
+  height: 300,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export default function Dropbox() {
+  const { currDir, user, files, setFiles } = useDefaultContext();
   const { isUploadModalOpen, setIsUploadModalOpen } = useUploadModalContext();
-  React.useEffect(() => {
-    if (isUploadModalOpen) {
-      setDisplay("block");
-    } else {
-      setDisplay("none");
-    }
-  }, [isUploadModalOpen]);
+  const handleClose = () => setIsUploadModalOpen(false);
   var totalData = 0;
-  var dataSent = 0;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function setTotalData(val: number) {
     totalData = val;
   }
 
-  function fun(file : TSFixMe, flag: boolean) {
+  function uploadSingleFile(file: TSFixMe, flag: boolean) {
     var newlyAddedFilesList = [];
-
     const formData = new FormData();
-
     file["id"] = Date.now();
     file["date"] = new Date().toLocaleDateString();
     formData.append("file", file);
@@ -39,25 +57,29 @@ function Dropbox() {
       type: "file",
     };
     newlyAddedFilesList.push(metadata);
-    console.log("New File Record is: ", newlyAddedFilesList, currDir);
-    formData.append("user_id", user.id);
+    formData.append("user_id", user.id.toString());
     formData.append("current_dir", currDir);
     formData.append("name", file.name);
     formData.append("size", file.size);
     // @ts-ignore
     formData.append("type", 0);
 
+    /**
+     * File upload is done in 2 steps:
+     * First, the file is uploaded to the file-server, which returns the id of that file object
+     * In the next step, that id is sent along with other data, as request object to add-document
+     * endpoint. This simply adds that file to the respective user
+     */
+
     axios
-      .post(`${BASE_URI}/document-add/`, formData, {
+      .post(`${BASE_URI}/upload/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress(e) {
-          console.log("Loaded :", e.loaded);
           // @ts-ignore
           document.getElementById(metadata.name).value = e.loaded / e.total;
         },
       })
       .then((res) => {
-        console.log("response aftre document upload from file server :", res);
         const data = {
           user_id: user.id,
           current_dir: currDir,
@@ -68,12 +90,17 @@ function Dropbox() {
         };
 
         axios
-          .post(`${API_URI}/upload`, data)
+          .post(`${API_URI}/add-document`, data)
           .then((res) => {
             console.log(
               "response aftre document upload from express server :",
               res
             );
+
+            setFiles([
+              ...files,
+              { filename: data.name, id: data.id, type: "0" },
+            ]);
           })
           .catch((err) => {
             console.log(
@@ -81,136 +108,63 @@ function Dropbox() {
               err
             );
           });
-
-        // props.setFiles([...props.files,...newlyAddedFilesList])
-        // setDataSent(dataSent+metadata.size)
-        // console.log("dataSent is: ",dataSent)
-        // if(dataSent==totalData)props.setView("HOME")
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  const UploadFiles = React.useCallback(function (files) {
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-      fun(file, false);
-    }
-    console.log("Dtasent is ", dataSent, totalData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const UploadHandler = function () {
-    // @ts-ignore
+  const previewHandler = (param: { type: string }) => {
+    //@ts-ignore
     const files = document.getElementById("fileElem").files;
-    UploadFiles(files);
+    document.getElementById("fileElem")?.setAttribute("disabled", "true");
+    [...files].forEach((file) => {
+      setTotalData(totalData + file.size);
+      let divEle = document.createElement("div");
+      let proEle = document.createElement("progress");
+      let pEle = document.createElement("p");
+
+      pEle.innerText = file.name;
+
+      proEle.id = file.name;
+      proEle.max = 1;
+      proEle.value = 0;
+      divEle.appendChild(pEle);
+      divEle.appendChild(proEle);
+
+      document.getElementById("preview")?.appendChild(divEle);
+      uploadSingleFile(file, false);
+    });
   };
 
-  const previewHandler = React.useCallback(
-    (param) => {
-      console.log("Files is: ", param);
-      const files =
-        param.type !== "change"
-          ? param
-          // @ts-ignore
-          : document.getElementById("fileElem").files;
-
-      [...files].forEach((file) => {
-        setTotalData(totalData + file.size);
-        console.log("TotalData is: ", totalData);
-        let divEle = document.createElement("div");
-        let proEle = document.createElement("progress");
-        let pEle = document.createElement("p");
-
-        pEle.innerText = file.name;
-
-        proEle.id = file.name;
-        proEle.max = 1;
-        proEle.value = 0;
-
-        divEle.appendChild(pEle);
-        divEle.appendChild(proEle);
-        // @ts-ignore
-        document.getElementById("preview").appendChild(divEle);
-      });
-      // @ts-ignore
-      if (document.getElementById("fileElem").files.length)
-        // @ts-ignore
-        document.getElementById("submitBtn").classList.remove("disabled");
-    },
-    [setTotalData, totalData]
-  );
-
-  useEffect(() => {
-    const dropArea = document.getElementById("drop-area");
-    const preventDefaults = function (e: Event) {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    const unhighlight = function (e: Event) {
-      dropArea?.classList.remove("highlight");
-    };
-
-    const highlight = function (e: Event) {
-      dropArea?.classList.add("highlight");
-    };
-
-    const handleDrop = function (e: DragEvent) {
-      let data = e.dataTransfer;
-      let files = data?.files;
-      previewHandler(files);
-      UploadFiles(files);
-    };
-
-    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-      dropArea?.addEventListener(eventName, preventDefaults, false);
-    });
-
-    ["dragleave", "drop"].forEach((eventName) => {
-      dropArea?.addEventListener(eventName, unhighlight, false);
-    });
-    ["dragenter", "dragover"].forEach((eventName) => {
-      dropArea?.addEventListener(eventName, highlight, false);
-    });
-    dropArea?.addEventListener("drop", handleDrop, false);
-  }, [UploadFiles, previewHandler]);
-
   return (
-    <div id="dropbox-modal" style={{ display: display }}>
-      <a
-        style={{ float: "right", paddingRight: "10px", cursor: "pointer" }}
-        onClick={() => {
-          setIsUploadModalOpen(false);
-        }}
+    <div>
+      <Modal
+        open={isUploadModalOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        X
-      </a>
-      <div id="drop-area">
-        <form className="my-form">
-          <p>
-            Upload multiple files with the file dialog or by dragging and
-            dropping images onto the dashed region
-          </p>
-          <input type="file" id="fileElem" multiple onChange={previewHandler} />
-
-          <label className="button" htmlFor="fileElem">
-            Select some files
-          </label>
-
-          <input
-            type="button"
-            id="submitBtn"
-            className="button disabled"
-            onClick={UploadHandler}
-            value="Upload!"
-          />
-        </form>
-      </div>
-      <div id="preview"></div>
+        <Box sx={style}>
+          <Button
+            component="label"
+            variant="contained"
+            startIcon={<CloudUploadIcon />}
+            style={{}}
+          >
+            Upload file
+            <VisuallyHiddenInput
+              id="fileElem"
+              onChange={previewHandler}
+              type="file"
+            />
+          </Button>
+          <div
+            style={{ position: "relative", bottom: "-100px" }}
+            id="preview"
+          ></div>
+        </Box>
+      </Modal>
     </div>
   );
 }
-
-export default Dropbox;

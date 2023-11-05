@@ -9,7 +9,7 @@ from core.views import DocumentList, DocumentCreate, DocumentDownload
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', DocumentList.as_view(), name='home'),
-    path('document-add/', DocumentCreate.as_view(), name='document-add'),
+    path('upload/', DocumentCreate.as_view(), name='document-add'),
     path('media/<path:relative_path>', DocumentDownload.as_view(), name='document-download'),
 
     path('accounts/login/', auth_views.LoginView.as_view()),

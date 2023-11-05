@@ -1,5 +1,4 @@
 import * as React from "react";
-import { AppContext } from "../../App";
 import axios from "axios";
 import { API_URI } from "../../constants";
 import { Box } from "@mui/material";
@@ -10,9 +9,10 @@ import { useDeviceContext } from "../../context/DeviceContext";
 import { useActionListContext } from "../../context/ActionListContext";
 import { useUploadModalContext } from "../../context/UploadModalContext";
 import { TSFixMe } from "../../../types";
+import { useDefaultContext } from "../../context/DefaultContext";
 
 export const ActionList = (props: TSFixMe) => {
-  const { currDir, user } = React.useContext(AppContext);
+  const { currDir, user } = useDefaultContext();
   const { setIsActionListOpen } = useActionListContext();
   const { setIsUploadModalOpen } = useUploadModalContext();
   const { isS } = useDeviceContext();
@@ -34,7 +34,7 @@ export const ActionList = (props: TSFixMe) => {
     const formData = new FormData();
     formData.append("name", folderName);
     formData.append("current_dir", currDir);
-    formData.append("user_id", user.id);
+    formData.append("user_id", user.id.toString());
 
     axios.post(API_URI + "/addNewFolder", formData).then((res) => {
       console.log("Res is: ", res);
