@@ -9,10 +9,12 @@ import Dropbox from "../components/Dropbox";
 import { ActionBar } from "../components/actionBar/ActionBar";
 import { TSFixMe } from "../../types";
 import { useDefaultContext } from "../context/DefaultContext";
+import { useUploadModalContext } from "../context/UploadModalContext";
 
 const Home = () => {
   const history = useHistory();
-  const { currDir, user, files, setFiles, setDirectories } = useDefaultContext();
+  const { currDir, user, setFiles, setDirectories } = useDefaultContext();
+  const { isUploadModalOpen } = useUploadModalContext();
 
   useEffect(() => {
     if (!sessionStorage.getItem(SESSION_ITEMS.USER)) {
@@ -26,7 +28,7 @@ const Home = () => {
         setFiles(res.data.files);
       });
     }
-  },[currDir, history, setDirectories, setFiles, user?.id, files]);
+  },[currDir, history, setDirectories, setFiles, user?.id, isUploadModalOpen]);
 
   return (
     <Box id={"home-container"} sx={{ display: "flex" }}>
