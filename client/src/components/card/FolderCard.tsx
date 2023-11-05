@@ -1,11 +1,11 @@
 import * as React from "react";
-import { AppContext } from "../../App";
 import { makeStyles } from "@material-ui/core/styles";
 import { CardContent } from "@mui/material";
 import { Box, Card } from "@material-ui/core";
 import { API_URI } from "../../constants";
 import axios from "axios";
 import { FOLDER_CARD_CN } from "../../classNameConstant";
+import { useDefaultContext } from "../../context/DefaultContext";
 
 const useStyles = makeStyles({
   root: {
@@ -27,8 +27,7 @@ const useStyles = makeStyles({
 export default function FolderCard({ data, userid }: { data: {name: string}; userid: string }) {
   console.log("data is:", data);
   const classes = useStyles();
-  const { currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList } =
-    React.useContext(AppContext);
+  const { currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList } = useDefaultContext()
 
   const getIntoFolderHandler = (currDir: string, name: string) => {
     const formData = new FormData();

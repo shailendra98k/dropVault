@@ -1,8 +1,6 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize('dropbox', 'root', '', {
-    host: '127.0.0.1',
-    dialect: 'mysql'
-});
+const { DataTypes } = require("sequelize");
+const sequelize = require('../config/sequelize');
+
 const User = sequelize.define('user', {
     id: {
         type: DataTypes.INTEGER,
