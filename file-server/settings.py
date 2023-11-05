@@ -81,9 +81,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dropbox',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB'),
         'PORT':'3306',
     }
 }
