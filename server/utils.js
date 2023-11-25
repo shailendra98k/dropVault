@@ -96,6 +96,6 @@ function getVerificationSuccessContent(){
   `
 }
 
-const BASE_URL = process.env.ENV === 'local' ? 'http://localhost' :'http://fakedropbox.fun'
+const BASE_URL = process.env.ENV === 'local' ? 'http://localhost' :'https://fakedropbox.fun'
 
 module.exports = { getEmailVerifyContent, getVerificationSuccessContent, BASE_URL };
