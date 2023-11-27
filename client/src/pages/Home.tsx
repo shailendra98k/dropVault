@@ -38,6 +38,7 @@ const Home = () => {
       formData.append("current_dir", currDir);
       formData.append("user_id", user?.id.toString());
       axios.post(API_URI, formData).then((res) => {
+        console.log('Res is: ', res.data.sub_dirs)
         setDirectories(res.data.sub_dirs);
         setFiles(res.data.files);
       });
