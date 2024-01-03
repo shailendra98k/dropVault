@@ -1,11 +1,12 @@
 import * as React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { CardContent } from "@mui/material";
-import { Box, Card } from "@material-ui/core";
+import { Box, Card, Divider } from "@material-ui/core";
 import { API_URI } from "../../constants";
 import axios from "axios";
 import { FOLDER_CARD_CN } from "../../classNameConstant";
 import { useDefaultContext } from "../../context/DefaultContext";
+import { isoToLocalDateString } from "../../utils";
 
 const useStyles = makeStyles({
   root: {
@@ -24,10 +25,17 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FolderCard({ data, userid }: { data: {name: string}; userid: string }) {
+export default function FolderCard({
+  data,
+  userid,
+}: {
+  data: { name: string; counts: number; size: number; createdAt: string };
+  userid: string;
+}) {
   console.log("data is:", data);
   const classes = useStyles();
-  const { currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList } = useDefaultContext()
+  const { currDir, setCurrDir, setDirectories, setFiles, setBreadcrumbsList } =
+    useDefaultContext();
 
   const getIntoFolderHandler = (currDir: string, name: string) => {
     const formData = new FormData();
@@ -56,17 +64,43 @@ export default function FolderCard({ data, userid }: { data: {name: string}; use
       >
         <CardContent>
           <div>
-            <i
-              style={{ fontSize: "32px", color: "grey" }}
-              className="fa fa-folder"
-            ></i>
+            <img
+              width="44"
+              height="44"
+              src="https://img.icons8.com/color/48/folder-invoices--v2.png"
+              alt="folder-invoices--v2"
+            />
           </div>
           <br></br>
-          <div>
-            <b>{data.name}</b>
+          <div
+            style={{
+              fontFamily: "sans-serif",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#111927",
+            }}
+          >
+            {data.name}
           </div>
-          {/* {data.counts && <div><b>{data.counts} files</b></div>} */}
+          <Divider
+            style={{ marginTop: "4px", marginBottom: "4px", opacity: 0.5 }}
+          />
+          <div style={{ fontSize: "12px" }}> File Size</div>
+          <div style={{ fontSize: "14px", opacity: 0.5 }}>
+            {" "}
+            {data.size} Mb{" "}
+            <img
+              width="10"
+              height="10"
+              src="https://img.icons8.com/material-rounded/30/full-stop.png"
+              alt="full-stop"
+            />{" "}
+            {data.counts} items{" "}
+          </div>
           {/* {context.user} */}
+          <div style={{ fontSize: "12px", opacity: 0.6, paddingTop:'4px' }}>
+            Created at {isoToLocalDateString(data.createdAt)}{" "}
+          </div>
         </CardContent>
       </Card>
     </Box>

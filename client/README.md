@@ -1,4 +1,4 @@
-DropBox is simple webApp for uploading and downloading Files onto remote server for worldwide access over the internet. 
+DropVault is simple webApp for uploading and downloading Files onto remote server for worldwide access over the internet. 
 It has two way of uploding:
 1) Uploding file/files
 2) Uploding the folder

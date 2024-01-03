@@ -3,7 +3,8 @@ import axios from "axios";
 import { Breadcrumbs } from "@mui/material";
 import { API_URI } from "../../constants";
 import { Button } from "@mui/material";
-import { AppContext } from "../../App";
+import { useDefaultContext } from "../../context/DefaultContext";
+import { useDeviceContext } from "../../context/DeviceContext";
 
 export const DirBreadcrumbs = () => {
   const {
@@ -13,12 +14,14 @@ export const DirBreadcrumbs = () => {
     setBreadcrumbsList,
     setFiles,
     setDirectories,
-  } = React.useContext(AppContext);
+  } = useDefaultContext();
+
+  const { isS } = useDeviceContext();
   var prefix = "";
   const changeDirectory = (path_uri: string) => {
     const formData = new FormData();
     formData.append("current_dir", path_uri);
-    formData.append("user_id", user.id);
+    formData.append("user_id", user.id.toString());
     axios.post(API_URI, formData).then((res) => {
       setDirectories(res.data.sub_dirs);
       setFiles(res.data.files);
@@ -32,14 +35,12 @@ export const DirBreadcrumbs = () => {
       separator="/"
       aria-label="breadcrumb"
       style={{
-        padding: "20px",
-        position: "fixed",
-        top: "16px",
-        paddingTop: "0px",
+        height: "5vh",
+        paddingLeft: isS ? "20px" : "0px",
       }}
     >
-      {breadcrumbsList.map((item: string, index : number) => {
-        let path_uri : string;
+      {breadcrumbsList.map((item: string, index: number) => {
+        let path_uri: string;
         if (index === 0) {
           path_uri = "/";
         } else if (index === 1) {
@@ -52,7 +53,7 @@ export const DirBreadcrumbs = () => {
 
         return (
           <Button
-            size="large"
+            size="medium"
             id={path_uri}
             onClick={() => {
               changeDirectory(path_uri);

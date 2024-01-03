@@ -54,16 +54,6 @@ export const ActionList = (props: TSFixMe) => {
     >
       <nav aria-label="secondary mailbox folders">
         <List>
-          <ActionItem
-            action={closeActionListhandler}
-            hide={!isS}
-            actionText="Close"
-          />
-        </List>
-      </nav>
-      <Divider />
-      <nav aria-label="secondary mailbox folders">
-        <List>
           <ActionItem action={openUploadModalHandler} actionText="UPLOAD" />
           <ActionItem action={createNewFolderHandler} actionText="New Folder" />
         </List>
@@ -80,7 +70,11 @@ export const ActionList = (props: TSFixMe) => {
       <Divider />
       <nav aria-label="secondary mailbox folders">
         <List>
-          <ActionItem actionText="RECENT" />
+          <ActionItem
+            action={closeActionListhandler}
+            hide={!isS}
+            actionText="CLOSE"
+          />
         </List>
       </nav>
     </Box>

@@ -5,35 +5,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import SignIn from "./pages/SignInPage";
 import SignUp from "./pages/SignUpPage";
 import React from "react";
-import HeaderV2 from "./components/header/Header";
+import { Header } from "./components/header/Header";
 import { DeviceContextProvider } from "./context/DeviceContext";
 import { ActionListContextProvider } from "./context/ActionListContext";
 import { UploadModalContextProvider } from "./context/UploadModalContext";
 import { DefaultContextProvider } from "./context/DefaultContext";
-
+import { URL_PATHS } from "./constants";
 
 function App() {
-
   return (
     <DeviceContextProvider>
       <ActionListContextProvider>
         <UploadModalContextProvider>
           <DefaultContextProvider>
-            <HeaderV2 />
+            <Header />
             <Router>
               <Switch>
-                <Route exact path="/">
-                  {" "}
-                  <Home />
-                </Route>
-                <Route exact path="/sign-in">
-                  {" "}
-                  <SignIn />{" "}
-                </Route>
-                <Route exact path="/sign-up">
-                  {" "}
-                  <SignUp />{" "}
-                </Route>
+                <Route exact path={URL_PATHS.HOME} component={Home} />
+                <Route exact path={URL_PATHS.SIGN_IN} component={SignIn} />
+                <Route exact path={URL_PATHS.SIGN_UP} component={SignUp} />
               </Switch>
             </Router>
           </DefaultContextProvider>

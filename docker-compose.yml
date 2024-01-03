@@ -6,7 +6,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: 'shailendra98k/fakedropbox_ui'
+    image: 'shailendra98k/dropvault_ui'
     ports:
       - "3000:3000"
   core:
@@ -15,7 +15,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: 'shailendra98k/fakedropbox_core'
+    image: 'shailendra98k/dropvault_core'
     ports:
       - "8000:8000"
   server:
@@ -24,7 +24,7 @@ services:
     build:
       context: ./file-server
       dockerfile: Dockerfile
-    image: 'shailendra98k/fakedropbox_file_server'
+    image: 'shailendra98k/dropvault_file_server'
     ports:
       - "8001:8001"
   nginx:
@@ -33,6 +33,6 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    image: 'shailendra98k/fakedropbox_nginx'
+    image: 'shailendra98k/dropvault_nginx'
     ports:
       - "80:80"

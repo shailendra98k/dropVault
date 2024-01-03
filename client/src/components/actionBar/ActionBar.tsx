@@ -18,7 +18,7 @@ export const ActionBar = (props : TSFixMe ) => {
         "& .MuiPaper-root": {
           width: isS ? "100%" : "280px",
           position: "relative",
-          top: isS ? "0px" : "10px",
+          top: "0px",
         },
       }}
       open={isActionListOpen}

@@ -3,8 +3,8 @@ name: Build and Deploy to ECS
 on:
   push:
     branches:
-      - main
       - develop
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -49,10 +49,10 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker push shailendra98k/fakedropbox_nginx:latest
-          docker push shailendra98k/fakedropbox_core:latest
-          docker push shailendra98k/fakedropbox_file_server:latest
-          docker push shailendra98k/fakedropbox_ui:latest
+          docker push shailendra98k/dropvault_nginx:latest
+          docker push shailendra98k/dropvault_core:latest
+          docker push shailendra98k/dropvault_file_server:latest
+          docker push shailendra98k/dropvault_ui:latest
 #
       - name: Configure AWS Credentials
         run: |
@@ -66,20 +66,20 @@ jobs:
       - name: Update ECS Task Definition
         run: |
           # Using AWS CLI to update the ECS task definition with the new image tag
-          aws ecs register-task-definition --family dropbox_nginx  --container-definitions '[{"name":"dropbox_nginx_ctn","image":"shailendra98k/fakedropbox_nginx:latest", "memory":128, "portMappings":[{"hostPort": 80, "protocol": "tcp", "containerPort":80}] }]' --region ap-south-1
-          aws ecs register-task-definition --family dropbox_ui  --container-definitions '[{"name":"dropbox_ui_ctn","image":"shailendra98k/fakedropbox_ui:latest", "memory":128, "portMappings":[{"hostPort": 3000, "protocol": "tcp", "containerPort":3000}] }]' --region ap-south-1
-          aws ecs register-task-definition --family dropbox_core  --container-definitions '[{"name":"dropbox_core_ctn","image":"shailendra98k/fakedropbox_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
-          aws ecs register-task-definition --family dropbox_file_server  --container-definitions '[{"name":"dropbox_file_server_ctn","image":"shailendra98k/fakedropbox_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropvault_nginx  --container-definitions '[{"name":"dropvault_nginx_ctn","image":"shailendra98k/dropvault_nginx:latest", "memory":128, "portMappings":[{"hostPort": 80, "protocol": "tcp", "containerPort":80}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropvault_ui  --container-definitions '[{"name":"dropvault_ui_ctn","image":"shailendra98k/dropvault_ui:latest", "memory":128, "portMappings":[{"hostPort": 3000, "protocol": "tcp", "containerPort":3000}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropvault_core  --container-definitions '[{"name":"dropvault_core_ctn","image":"shailendra98k/dropvault_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropvault_file_server  --container-definitions '[{"name":"dropvault_file_server_ctn","image":"shailendra98k/dropvault_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
 
       - name: Stop ECS Task
         run: |
-          aws ecs list-tasks --cluster "fakeDropbox" | jq -r ".taskArns[]" | xargs -n1 aws ecs stop-task --no-cli-pager --cluster "fakeDropbox" --task
+          aws ecs list-tasks --cluster "DropVault" | jq -r ".taskArns[]" | xargs -n1 aws ecs stop-task --no-cli-pager --cluster "DropVault" --task
 
 
       - name: Run ECS Task
         run: |
           # Using AWS CLI to run the ECS task using the updated task definition
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_nginx
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_ui
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_core
-          aws ecs run-task --cluster fakeDropbox --task-definition dropbox_file_server
+          aws ecs run-task --cluster DropVault --task-definition dropvault_nginx
+          aws ecs run-task --cluster DropVault --task-definition dropvault_ui
+          aws ecs run-task --cluster DropVault --task-definition dropvault_core
+          aws ecs run-task --cluster DropVault --task-definition dropvault_file_server

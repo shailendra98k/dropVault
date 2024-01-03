@@ -10,9 +10,23 @@ import { ActionBar } from "../components/actionBar/ActionBar";
 import { TSFixMe } from "../../types";
 import { useDefaultContext } from "../context/DefaultContext";
 import { useUploadModalContext } from "../context/UploadModalContext";
+import { DirBreadcrumbs } from "../components/breadcrumbs/Breadcrump";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    height: "95vh",
+    paddingTop: "60px",
+    "@media (max-width: 840px)": {
+      flexDirection: "column",
+    },
+  },
+});
 
 const Home = () => {
   const history = useHistory();
+  const classes = useStyles();
   const { currDir, user, setFiles, setDirectories } = useDefaultContext();
   const { isUploadModalOpen } = useUploadModalContext();
 
@@ -24,18 +38,21 @@ const Home = () => {
       formData.append("current_dir", currDir);
       formData.append("user_id", user?.id.toString());
       axios.post(API_URI, formData).then((res) => {
+        console.log('Res is: ', res.data.sub_dirs)
         setDirectories(res.data.sub_dirs);
         setFiles(res.data.files);
       });
     }
-  },[currDir, history, setDirectories, setFiles, user?.id, isUploadModalOpen]);
+  }, [currDir, history, setDirectories, setFiles, user?.id, isUploadModalOpen]);
 
   return (
-    <Box id={"home-container"} sx={{ display: "flex" }}>
-      <ActionBar />
-      <Body />
-      <Dropbox />
-    </Box>
+    <>
+      <Box className={classes.container}>
+        <ActionBar />
+        <Body />
+        <Dropbox />
+      </Box>
+    </>
   );
 };
 
@@ -43,19 +60,22 @@ const Body = () => {
   const { files, user, directories } = useDefaultContext();
 
   return (
-    <Box style={{ flexGrow: 4, height: "90vh", overflow: "scroll" }}>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {directories.map((dir: TSFixMe) => {
-          return <FolderCard data={dir} userid={user.id.toString()} />;
-        })}
-      </Box>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <DirBreadcrumbs />
+      <Box style={{ flexGrow: 4, height: "90vh", overflow: "scroll" }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          {directories.map((dir: TSFixMe) => {
+            return <FolderCard data={dir} userid={user.id.toString()} />;
+          })}
+        </Box>
 
-      <Box sx={{ display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
-        {files.map((file: TSFixMe) => {
-          return <FileCard data={file} />;
-        })}
+        <Box sx={{ display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
+          {files.map((file: TSFixMe) => {
+            return <FileCard data={file} />;
+          })}
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
