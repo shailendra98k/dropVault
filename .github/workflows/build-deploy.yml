@@ -72,13 +72,13 @@ jobs:
 
       - name: Stop ECS Task
         run: |
-          aws ecs list-tasks --cluster "dropvault" | jq -r ".taskArns[]" | xargs -n1 aws ecs stop-task --no-cli-pager --cluster "dropvault" --task
+          aws ecs list-tasks --cluster "DropVault" | jq -r ".taskArns[]" | xargs -n1 aws ecs stop-task --no-cli-pager --cluster "dropvault" --task
 
 
       - name: Run ECS Task
         run: |
           # Using AWS CLI to run the ECS task using the updated task definition
-          aws ecs run-task --cluster dropvault --task-definition dropvault_nginx
-          aws ecs run-task --cluster dropvault --task-definition dropvault_ui
-          aws ecs run-task --cluster dropvault --task-definition dropvault_core
-          aws ecs run-task --cluster dropvault --task-definition dropvault_file_server
+          aws ecs run-task --cluster DropVault --task-definition dropvault_nginx
+          aws ecs run-task --cluster DropVault --task-definition dropvault_ui
+          aws ecs run-task --cluster DropVault --task-definition dropvault_core
+          aws ecs run-task --cluster DropVault --task-definition dropvault_file_server
