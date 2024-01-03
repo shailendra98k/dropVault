@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1!2e0s#90-n+@%60^=c)%qqq5^-o--d^!fro3c+5eszwcko=(d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fakedropbox.fun', 'localhost']
+ALLOWED_HOSTS = ['dropvault.fun', 'localhost']
 
 
 # Application definition
