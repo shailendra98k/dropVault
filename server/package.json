@@ -1,7 +1,7 @@
 {
-  "name": "dropbox",
+  "name": "dropVault",
   "version": "1.0.0",
-  "description": "Applocation to upload files",
+  "description": "Application to upload files",
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "^2.894.0",
