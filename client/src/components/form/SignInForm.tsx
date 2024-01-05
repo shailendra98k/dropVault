@@ -33,7 +33,7 @@ const SignInForm = (): JSX.Element => {
       })
       .then((res) => {
         sessionStorage.setItem(SESSION_ITEMS.USER, JSON.stringify(res.data));
-        window.location.href = URL_PATHS.HOME;
+        window.location.href = URL_PATHS.DRIVE;
       })
       .catch((err) => {
         console.log(err);

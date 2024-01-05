@@ -1,5 +1,5 @@
 import "./App.css";
-import Home from "./pages/Home";
+import DRIVE from "./pages/Drive";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SignIn from "./pages/SignInPage";
@@ -21,7 +21,7 @@ function App() {
             <Header />
             <Router>
               <Switch>
-                <Route exact path={URL_PATHS.HOME} component={Home} />
+                <Route exact path={URL_PATHS.DRIVE} component={DRIVE} />
                 <Route exact path={URL_PATHS.SIGN_IN} component={SignIn} />
                 <Route exact path={URL_PATHS.SIGN_UP} component={SignUp} />
               </Switch>

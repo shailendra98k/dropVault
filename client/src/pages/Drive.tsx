@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Home = () => {
+const DRIVE = () => {
   const history = useHistory();
   const classes = useStyles();
   const { currDir, user, setFiles, setDirectories } = useDefaultContext();
@@ -79,4 +79,4 @@ const Body = () => {
   );
 };
 
-export default Home;
+export default DRIVE;
