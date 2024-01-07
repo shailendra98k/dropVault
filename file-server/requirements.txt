@@ -2,7 +2,7 @@ asgiref==3.7.2
 boto==2.49.0
 boto3==1.34.14
 botocore==1.34.14
-Django==5.0.1
+Django==4.2.9
 django-createuser==0.1.0
 django-storages==1.14.2
 djangorestframework==3.14.0
