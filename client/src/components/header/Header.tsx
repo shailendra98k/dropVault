@@ -31,7 +31,11 @@ export const Header = () => {
           <MenuIcon />
         </span>
         
-        <span>&nbsp;&nbsp;DropBox</span>
+        <span>&nbsp;&nbsp;<img src="./dropvault-white.ico" alt="ic" width={24} height={24}></img> &nbsp;&nbsp;</span>
+        <span>&nbsp;&nbsp;Overview &nbsp;&nbsp;</span>
+        <span>&nbsp;&nbsp;Features &nbsp;&nbsp;</span>
+        <span style={{float:'right'}}>&nbsp;&nbsp;Sign In &nbsp;&nbsp;</span>
+        <span style={{float:'right'}}>&nbsp;&nbsp;Contact Us &nbsp;&nbsp;</span>
       </div>
     </AppBar>
   );
