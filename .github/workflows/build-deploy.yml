@@ -31,9 +31,12 @@ jobs:
           echo MONGO_USER_PASSWORD="${{ secrets.MONGO_USER_PASSWORD}}" >> .env
           
           cd ../file-server && touch .env
+          echo DEFAULT_FILE_STORAGE="storages.backends.s3.S3Storage" >> .env
           echo DB="${{ secrets.DB}}" >> .env
           echo DB_USER="${{ secrets.DB_USER}}" >> .env
           echo DB_PASSWORD="${{ secrets.DB_PASSWORD}}" >> .env
+          echo AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           
           cd ..
 
