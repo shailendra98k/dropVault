@@ -132,6 +132,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CDN_BASE_URL = 'https://d2cg59g0calthe.cloudfront.net'
 AWS_STORAGE_BUCKET_NAME = 'drop-vault'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
