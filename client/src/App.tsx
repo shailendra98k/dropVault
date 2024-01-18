@@ -12,6 +12,7 @@ import { ActionListContextProvider } from "./context/ActionListContext";
 import { UploadModalContextProvider } from "./context/UploadModalContext";
 import { DefaultContextProvider } from "./context/DefaultContext";
 import { URL_PATHS } from "./constants";
+import { Footer } from "./components/footer/Footer";
 
 function App() {
   return (
