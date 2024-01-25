@@ -30,29 +30,66 @@ export default function FileCard({
   data: { id: string; filename: string; size: number; createdAt: string };
 }) {
   const classes = useStyles();
-  const onClickHandler = () => {
-    window.open(`${BASE_URI}/media/${data.id}`, "_blank");
+  const onClickHandler = (download: number) => {
+    window.open(`${BASE_URI}/media/${data.id}?d=${download}`, "_blank");
   };
 
+  const [hovering, setHovering] = React.useState(false);
+
   return (
-    <Box className={FILE_CARD_CN} sx={{ margin: "6px" }}>
-      <Card className={classes.root} onClick={() => onClickHandler()}>
+    <Box
+      style={{ cursor: "pointer" }}
+      className={FILE_CARD_CN}
+      sx={{ margin: "6px" }}
+      onMouseLeave={() => setHovering(false)}
+      onMouseEnter={() => setHovering(true)}
+      onClick={() => onClickHandler(0)}
+    >
+      <Card className={classes.root}>
         <CardContent>
           <div>
             <FileBasedIcon filename={data.filename} />
+            <div
+              style={{
+                display: hovering ? "inline" : "none",
+                float: "right",
+                opacity: "0.5",
+                cursor: "pointer",
+              }}
+              onClick={() => onClickHandler(1)}
+            >
+              <img
+                width="16"
+                height="16"
+                src="https://img.icons8.com/3d-fluency/94/down.png"
+                alt="down"
+              />
+            </div>
           </div>
           <br></br>
-          <p style={{ width: "200px", height: "24px", wordWrap: "break-word" , overflow:'hidden'}}>
-            <b>{data.filename}</b>
-          </p>
-          <Divider
-            style={{ marginTop: "4px", marginBottom: "4px", opacity: 0.5 }}
-          />
-          <div style={{ fontSize: "12px" }}> File Size</div>
-          <div style={{ fontSize: "14px", opacity: 0.5 }}> {data.size} Mb </div>
-          {/* {context.user} */}
-          <div style={{ fontSize: "12px", opacity: 0.6, paddingTop: "4px" }}>
-            Created at {isoToLocalDateString(data.createdAt)}{" "}
+          <div style={{ cursor: "pointer" }}>
+            <p
+              style={{
+                width: "200px",
+                height: "24px",
+                wordWrap: "break-word",
+                overflow: "hidden",
+              }}
+            >
+              <b>{data.filename}</b>
+            </p>
+            <Divider
+              style={{ marginTop: "4px", marginBottom: "4px", opacity: 0.5 }}
+            />
+            <div style={{ fontSize: "12px" }}> File Size</div>
+            <div style={{ fontSize: "14px", opacity: 0.5 }}>
+              {" "}
+              {data.size} Mb{" "}
+            </div>
+            {/* {context.user} */}
+            <div style={{ fontSize: "12px", opacity: 0.6, paddingTop: "4px" }}>
+              Created at {isoToLocalDateString(data.createdAt)}{" "}
+            </div>
           </div>
         </CardContent>
       </Card>
