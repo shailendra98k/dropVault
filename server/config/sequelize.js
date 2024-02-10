@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
-  "verceldb",
+  "crispyRead",
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   {
