@@ -15,7 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { API_URI, URL_PATHS } from "../../constants";
 import { TSFixMe } from "../../../types";
-
+import Alert from "@mui/material/Alert";
+import { AlertSeverityEnum, useAlertContext } from "../../context/AlertContext";
 
 /**
  *
@@ -23,6 +24,7 @@ import { TSFixMe } from "../../../types";
  */
 const SignUpForm = (): JSX.Element => {
   const theme = createTheme();
+  const { setAlertText, setSeverity } = useAlertContext();
 
   const handleSubmit = (event: TSFixMe) => {
     event.preventDefault();
@@ -35,17 +37,19 @@ const SignUpForm = (): JSX.Element => {
         password: data.get("password"),
       })
       .then((res) => {
-        window.location.href = URL_PATHS.SIGN_IN;
+        setSeverity(AlertSeverityEnum.SUCCESS);
+        setAlertText(res.data["msg"]);
       })
       .catch((err) => {
-        console.log(err);
+        setSeverity(AlertSeverityEnum.ERROR);
+        setAlertText(err.response.data["msg"]);
+        console.log(err.response.data["msg"]);
       });
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -80,7 +84,7 @@ const SignUpForm = (): JSX.Element => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+                  required={true}
                   fullWidth
                   id="last_name"
                   label="Last Name"
@@ -109,16 +113,9 @@ const SignUpForm = (): JSX.Element => {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
+              id="sign-up-btn"
               type="submit"
               fullWidth
               variant="contained"

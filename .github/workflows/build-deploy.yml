@@ -31,9 +31,12 @@ jobs:
           echo MONGO_USER_PASSWORD="${{ secrets.MONGO_USER_PASSWORD}}" >> .env
           
           cd ../file-server && touch .env
+          echo DEFAULT_FILE_STORAGE="storages.backends.s3.S3Storage" >> .env
           echo DB="${{ secrets.DB}}" >> .env
           echo DB_USER="${{ secrets.DB_USER}}" >> .env
           echo DB_PASSWORD="${{ secrets.DB_PASSWORD}}" >> .env
+          echo AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           
           cd ..
 
@@ -69,7 +72,7 @@ jobs:
           aws ecs register-task-definition --family dropvault_nginx  --container-definitions '[{"name":"dropvault_nginx_ctn","image":"shailendra98k/dropvault_nginx:latest", "memory":128, "portMappings":[{"hostPort": 80, "protocol": "tcp", "containerPort":80}] }]' --region ap-south-1
           aws ecs register-task-definition --family dropvault_ui  --container-definitions '[{"name":"dropvault_ui_ctn","image":"shailendra98k/dropvault_ui:latest", "memory":128, "portMappings":[{"hostPort": 3000, "protocol": "tcp", "containerPort":3000}] }]' --region ap-south-1
           aws ecs register-task-definition --family dropvault_core  --container-definitions '[{"name":"dropvault_core_ctn","image":"shailendra98k/dropvault_core:latest", "memory":128, "portMappings":[{"hostPort": 8000, "protocol": "tcp", "containerPort":8000}] }]' --region ap-south-1
-          aws ecs register-task-definition --family dropvault_file_server  --container-definitions '[{"name":"dropvault_file_server_ctn","image":"shailendra98k/dropvault_file_server:latest", "memory":128, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
+          aws ecs register-task-definition --family dropvault_file_server  --container-definitions '[{"name":"dropvault_file_server_ctn","image":"shailendra98k/dropvault_file_server:latest", "memory":500, "portMappings":[{"hostPort": 8001, "protocol": "tcp", "containerPort":8001}] }]' --region ap-south-1
 
       - name: Stop ECS Task
         run: |

@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useDefaultContext } from "../context/DefaultContext";
+import { AlertSeverityEnum, useAlertContext } from "../context/AlertContext";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,6 +39,7 @@ const style = {
 
 export default function Dropbox() {
   const { currDir, user, files, setFiles } = useDefaultContext();
+  const { setAlertText, setSeverity } = useAlertContext();
   const { isUploadModalOpen, setIsUploadModalOpen } = useUploadModalContext();
   const handleClose = () => setIsUploadModalOpen(false);
   var totalData = 0;
@@ -80,6 +82,10 @@ export default function Dropbox() {
         },
       })
       .then((res) => {
+        setIsUploadModalOpen(false);
+        setAlertText("File Uploaded Successfully");
+        setSeverity(AlertSeverityEnum.SUCCESS);
+
         const data = {
           user_id: user.id,
           current_dir: currDir,

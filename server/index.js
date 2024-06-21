@@ -135,15 +135,27 @@ app.post("/api/v1/sign-up/", async (req, res) => {
    * 2. A directory to be creteas specificly for that user in the storage
    * 3. Now that directory is created, we need to store the new directory info in MongoDB
    */
+
+  if (!req.body.email) {
+    return res.status(400).send({ msg: "Please enter your email" });
+  }
+  if (!req.body.first_name) {
+    return res.status(400).send({ msg: "Please enter your first name" });
+  }
+  if (!req.body.password) {
+    return res.status(400).send({ msg: "Please enter your password" });
+  }
+
   const user = await User.findOne({
     where: {
       email: req.body.email,
     },
+    raw: true,
   });
-  console.log("User is: ", user);
-  if (user && user.verfied) {
-    return res.status(403).send("User with email already exists!!!");
+  if (user && user["verified"]) {
+    return res.status(403).json({ msg: "Email address already registered!" });
   }
+
   if (user && !user.verfied) {
     const mailOptions = {
       from: "shailendra.kumar@dropvault.fun",
@@ -159,7 +171,9 @@ app.post("/api/v1/sign-up/", async (req, res) => {
         console.log("Email sent:", info.response);
       }
     });
-    return res.status(403).send("Verification mail sent to email again");
+    return res.status(201).json({
+      msg: "Please click on the verification link sent to this email address.",
+    });
   }
 
   //create a new user
@@ -181,9 +195,11 @@ app.post("/api/v1/sign-up/", async (req, res) => {
       subject: "Email Verification", // Subject of the email
       html: getEmailVerifyContent(user.identifier), // Email content in plain text
     });
-    res.status(201).send("Verification mail sent to email");
+    res.status(201).json({
+      msg: "Please click on the verification link sent to this email address.",
+    });
   } catch (e) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 });
 app.post("/api/v1/sign-in/", async (req, res) => {
@@ -193,13 +209,16 @@ app.post("/api/v1/sign-in/", async (req, res) => {
       password: req.body.password,
     },
   });
+  
   if (!user) {
-    return res.status(403).send("Incorrect credentials!!!");
+    return res.status(403).json({ msg: "Incorrect credentials!!!" });
   }
   if (!user.verified) {
     return res
       .status(403)
-      .send("Please verify this account vis link sent on email!!!");
+      .json({
+        msg: "Please click on the verification link sent to this email address.",
+      });
   }
 
   //TODO: Return bearerToken in the cookie response header

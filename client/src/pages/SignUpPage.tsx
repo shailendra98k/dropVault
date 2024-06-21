@@ -12,7 +12,7 @@ export default function SignUp() {
 
   React.useEffect(() => {
     if (sessionStorage.getItem(SESSION_ITEMS.USER)) {
-      history.push(URL_PATHS.HOME);
+      history.push(URL_PATHS.DRIVE);
     }
   });
 

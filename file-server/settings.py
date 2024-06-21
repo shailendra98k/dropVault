@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1!2e0s#90-n+@%60^=c)%qqq5^-o--d^!fro3c+5eszwcko=(d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-13-126-237-29.ap-south-1.compute.amazonaws.com', 'localhost']
+ALLOWED_HOSTS = ['ec2-13-200-248-1.ap-south-1.compute.amazonaws.com', 'localhost']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
     'django_createuser',
+    'storages'  # for s3 storage
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'verceldb',
+        'NAME': 'crispyRead',
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB'),
@@ -130,6 +131,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CDN_BASE_URL = 'https://d2cg59g0calthe.cloudfront.net'
+AWS_STORAGE_BUCKET_NAME = 'drop-vault'
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_LOCATION = 'file-server/media'
+DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE')
 
 MEDIA_URL = '/file-server/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'file-server/media')

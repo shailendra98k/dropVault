@@ -15,12 +15,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "axios";
 import { API_URI, SESSION_ITEMS, URL_PATHS } from "../../constants";
 import { TSFixMe } from "../../../types";
+import { AlertSeverityEnum, useAlertContext } from "../../context/AlertContext";
 
 /**
  *
  * @returns Sign In Form
  */
 const SignInForm = (): JSX.Element => {
+  const { setAlertText, setSeverity } = useAlertContext();
   const theme = createTheme();
 
   const handleSubmit = (event: TSFixMe) => {
@@ -33,10 +35,12 @@ const SignInForm = (): JSX.Element => {
       })
       .then((res) => {
         sessionStorage.setItem(SESSION_ITEMS.USER, JSON.stringify(res.data));
-        window.location.href = URL_PATHS.HOME;
+        window.location.href = URL_PATHS.DRIVE;
       })
       .catch((err) => {
-        console.log(err);
+        setAlertText(err.response.data["msg"]);
+        setSeverity(AlertSeverityEnum.ERROR);
+        console.log(err.response);
       });
   };
 
@@ -46,7 +50,7 @@ const SignInForm = (): JSX.Element => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 16,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -84,10 +88,6 @@ const SignInForm = (): JSX.Element => {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -97,13 +97,8 @@ const SignInForm = (): JSX.Element => {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="/sign-up" variant="body2">
+                <Link href="/sign-up" variant="body2" justifyContent="flex-end">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

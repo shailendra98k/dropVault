@@ -1,4 +1,5 @@
 import "./App.css";
+import DRIVE from "./pages/Drive";
 import Home from "./pages/Home";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,6 +12,8 @@ import { ActionListContextProvider } from "./context/ActionListContext";
 import { UploadModalContextProvider } from "./context/UploadModalContext";
 import { DefaultContextProvider } from "./context/DefaultContext";
 import { URL_PATHS } from "./constants";
+import { Footer } from "./components/footer/Footer";
+import { AlertContextProvider } from "./context/AlertContext";
 
 function App() {
   return (
@@ -19,13 +22,16 @@ function App() {
         <UploadModalContextProvider>
           <DefaultContextProvider>
             <Header />
-            <Router>
-              <Switch>
-                <Route exact path={URL_PATHS.HOME} component={Home} />
-                <Route exact path={URL_PATHS.SIGN_IN} component={SignIn} />
-                <Route exact path={URL_PATHS.SIGN_UP} component={SignUp} />
-              </Switch>
-            </Router>
+            <AlertContextProvider>
+              <Router>
+                <Switch>
+                  <Route exact path={URL_PATHS.HOME} component={Home} />
+                  <Route exact path={URL_PATHS.DRIVE} component={DRIVE} />
+                  <Route exact path={URL_PATHS.SIGN_IN} component={SignIn} />
+                  <Route exact path={URL_PATHS.SIGN_UP} component={SignUp} />
+                </Switch>
+              </Router>
+            </AlertContextProvider>
           </DefaultContextProvider>
         </UploadModalContextProvider>
       </ActionListContextProvider>
