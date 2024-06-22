@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: The template used to create an ECS Cluster from the ECS Console.
+Parameters:
+  ECSClusterName:
+    Type: String
+    Description: Specifies the ECS Cluster Name with which the resources would be associated
+    Default: DropVault
+  SecurityGroupIds:
+    Type: 'List<AWS::EC2::SecurityGroup::Id>'
+    Description: Optional - Specifies the Comma separated list of the Security Group Id of an existing Security Group.
+  SubnetIds:
+    Type: 'List<AWS::EC2::Subnet::Id>'
+    Description: A list of subnets for the Auto Scaling group
+  LatestECSOptimizedAMI:
+    Description: AMI ID
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ecs/optimized-ami/amazon-linux-2/kernel-5.10/recommended/image_id
+
+
+
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ECSClusterName
+  
+  SSHKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: dropvault-ssh
+      KeyFormat: pem
+      KeyType: rsa
+      
+  EC2LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    DependsOn: ECSCluster
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref LatestECSOptimizedAMI
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true # associate public 1pv4 address to the ec2 instance
+            DeviceIndex: 0
+            DeleteOnTermination: true
+            Groups: !Ref SecurityGroupIds # security group associated with the ec2-instance
+        KeyName: dropvault-ssh # key-pair name to ssh into ec2-instance
+        UserData: !Base64
+          Fn::Sub:
+            - |-
+              #!/bin/bash
+              echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config;
+            - ClusterName: !Ref ECSClusterName
+  EC2AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn: ECSCluster
+    Properties:
+      MinSize: '1'
+      MaxSize: '1'
+      DesiredCapacity: '1'
+      MixedInstancesPolicy:
+        LaunchTemplate:
+          LaunchTemplateSpecification:
+            LaunchTemplateId: !Ref EC2LaunchTemplate
+            Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
+          Overrides:
+            - InstanceType: t2.micro
+      VPCZoneIdentifier: !Ref SubnetIds
+      Tags:
+        - Key: Name
+          PropagateAtLaunch: true
+          Value: !Join
+            - ' - '
+            - - ECS Instance
+              - !Ref ECSClusterName
+  
+  EC2CapacityProvider:
+    Type: AWS::ECS::CapacityProvider
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref EC2AutoScalingGroup
+        ManagedScaling:
+          Status: ENABLED
+          TargetCapacity: 100
+        ManagedTerminationProtection: DISABLED
+  
+  ClusterCapacityProviderAssociations:
+    Type: AWS::ECS::ClusterCapacityProviderAssociations
+    Properties:
+      Cluster: !Ref ECSClusterName
+      CapacityProviders:
+        - !Ref EC2CapacityProvider
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          Weight: 1
+          CapacityProvider: !Ref EC2CapacityProvider
+
+  IAMUser:  
+      Type: AWS::IAM::User
+      Properties:
+        UserName: adminUser
+
+  IAMUserPolicy:
+    Type: AWS::IAM::UserPolicy
+    Properties:
+      PolicyName: root
+      UserName: !Ref IAMUser
+      PolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          Effect: Allow
+          Action: '*'
+          Resource: '*'
+Outputs:
+  ECSCluster:
+    Description: The created cluster.
+    Value: !Ref ECSCluster
