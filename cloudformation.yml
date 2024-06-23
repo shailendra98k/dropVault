@@ -15,6 +15,10 @@ Parameters:
     Description: AMI ID
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ecs/optimized-ami/amazon-linux-2/kernel-5.10/recommended/image_id
+  IamRoleInstanceProfile:
+    Type: String
+    Description: Specifies the Name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance
+    Default: arn:aws:iam::381492006675:instance-profile/ecsInstanceRole
 
 
 
@@ -43,6 +47,8 @@ Resources:
             DeleteOnTermination: true
             Groups: !Ref SecurityGroupIds # security group associated with the ec2-instance
         KeyName: dropvault-ssh # key-pair name to ssh into ec2-instance
+        IamInstanceProfile:
+          Arn: !Ref IamRoleInstanceProfile
         UserData: !Base64
           Fn::Sub:
             - |-
