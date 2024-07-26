@@ -158,7 +158,7 @@ app.post("/api/v1/sign-up/", async (req, res) => {
 
   if (user && !user.verfied) {
     const mailOptions = {
-      from: "shailendra.kumar@dropvault.fun",
+      from: process.env.ZOHO_USER,
       to: req.body.email,
       subject: "Email Verification",
       html: getEmailVerifyContent(user.identifier),
@@ -190,7 +190,7 @@ app.post("/api/v1/sign-up/", async (req, res) => {
       dir_path: `/${new_user.id}`,
     });
     const info = await mailer.sendMail({
-      from: "shailendra.kumar@dropvault.fun", // Sender's email address
+      from: process.env.ZOHO_USER, // Sender's email address
       to: req.body.email, // Recipient's email address
       subject: "Email Verification", // Subject of the email
       html: getEmailVerifyContent(user.identifier), // Email content in plain text
