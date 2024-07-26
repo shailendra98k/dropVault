@@ -50,7 +50,7 @@ class DocumentDownload(View):
         bucket_name = default_storage.bucket_name
         url = document.src
 
-        if bucket_name == 'drop-vault' and url.__contains__('https'):
+        if bucket_name == settings.AWS_STORAGE_BUCKET_NAME and url.__contains__('https'):
             parsed_url = urlparse(document.src)
             path = parsed_url.path
 
